@@ -1,0 +1,13 @@
+Copyright © 2025 Jorge Muñoz Castillo(Jorge221z). All rights reserved.
+
+This software and its contents are provided solely for educational and reference purposes.
+
+Permissions:
+- Use, modification, or distribution requires explicit written consent from the author.
+- Any permitted use must include clear attribution to the original author.
+
+Prohibitions:
+- Unauthorized use, copying, modification, distribution, or commercialization is strictly forbidden.
+- No open-source rights are granted under this license.
+
+For permission requests, contact: jorgemunozcast12@gmail.com
