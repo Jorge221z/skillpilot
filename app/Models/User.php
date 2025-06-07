@@ -45,4 +45,14 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+
+    /**
+     * El siguiente metodo asocia el modelo User con el modelo UserProfile.
+     */
+    public function profile()
+    {
+    return $this->hasOne(UserProfile::class);
+    }
+
 }
