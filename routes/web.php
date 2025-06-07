@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\UserPreferencesController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 Route::get('/', function () {
@@ -14,7 +15,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('dashboard');
 
     Route::get('profile', function () {
-        return Inertia::render('profile');
+        $userProfile = \App\Models\UserProfile::where('user_id', Auth::id())->first();
+        return Inertia::render('profile', [
+            'userProfile' => $userProfile
+        ]);
     })->name('profile');
 
     // Rutas para User Preferences
