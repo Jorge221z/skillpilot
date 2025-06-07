@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('user_profiles', function (Blueprint $table) {
             $table->id();
-            $table->string('desided_position')->nullable();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->string('desired_position')->nullable();
             $table->json('technologies')->nullable();
             $table->longText('parsed_cv')->nullable();
             $table->timestamps();

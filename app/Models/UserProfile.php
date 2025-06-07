@@ -6,6 +6,16 @@ use Illuminate\Database\Eloquent\Model;
 
 class UserProfile extends Model
 {
+    protected $fillable = [
+        'user_id',
+        'desired_position',
+        'technologies',
+        'parsed_cv'
+    ];
+
+    protected $casts = [
+        'technologies' => 'array'
+    ];
 
     /**
      * El siguiente metodo asocia el modelo User con el modelo UserProfile.
