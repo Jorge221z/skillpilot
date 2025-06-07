@@ -42,7 +42,8 @@ class UserPreferencesController extends Controller
                 [
                     'desired_position' => $request->desired_position,
                     'technologies' => $request->technologies,
-                    'parsed_cv' => $cleanedText
+                    'parsed_cv' => $cleanedText,
+                    'cv_filename' => $cvFile->getClientOriginalName()
                 ]
             );
 

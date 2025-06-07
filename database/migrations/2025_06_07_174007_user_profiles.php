@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('desired_position')->nullable();
             $table->json('technologies')->nullable();
             $table->longText('parsed_cv')->nullable();
+            $table->string('cv_filename')->nullable();
             $table->timestamps();
         });
     }

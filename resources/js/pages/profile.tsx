@@ -22,6 +22,7 @@ interface UserProfile {
     desired_position: string | null;
     technologies: string[] | null;
     parsed_cv: string | null;
+    cv_filename: string | null;
     created_at: string;
     updated_at: string;
 }
@@ -93,25 +94,57 @@ export default function Profile() {
         // Filtrar tecnologías vacías
         const validTechnologies = technologies.filter(tech => tech.trim() !== '');
 
-        router.put('/profile/update', {
-            desired_position: data.desired_position,
-            technologies: validTechnologies,
-        }, {
-            onStart: () => {
-                setMessage(null);
-                setIsProcessing(true);
-            },
-            onFinish: () => {
-                setIsProcessing(false);
-            },
-            onSuccess: () => {
-                setIsEditing(false);
-            },
-            onError: (errors) => {
-                console.error('Errores:', errors);
-                setMessage({ type: 'error', text: 'Error al actualizar el perfil.' });
-            }
-        });
+        // Si hay un nuevo CV seleccionado, procesarlo con el endpoint de procesamiento
+        if (selectedFile) {
+            // Crear FormData para enviar archivo
+            const formData = new FormData();
+            formData.append('cv_file', selectedFile);
+            formData.append('desired_position', data.desired_position);
+
+            validTechnologies.forEach((tech, index) => {
+                formData.append(`technologies[${index}]`, tech);
+            });
+
+            // Usar router.post para procesar el nuevo CV
+            router.post('/profile/process-cv', formData, {
+                onStart: () => {
+                    setMessage(null);
+                    setIsProcessing(true);
+                },
+                onFinish: () => {
+                    setIsProcessing(false);
+                },
+                onSuccess: () => {
+                    setSelectedFile(null);
+                    setIsEditing(false);
+                },
+                onError: (errors) => {
+                    console.error('Errores:', errors);
+                    setMessage({ type: 'error', text: 'Error al procesar el nuevo CV. Por favor, revisa los datos e inténtalo de nuevo.' });
+                }
+            });
+        } else {
+            // Solo actualizar datos sin procesar CV
+            router.put('/profile/update', {
+                desired_position: data.desired_position,
+                technologies: validTechnologies,
+            }, {
+                onStart: () => {
+                    setMessage(null);
+                    setIsProcessing(true);
+                },
+                onFinish: () => {
+                    setIsProcessing(false);
+                },
+                onSuccess: () => {
+                    setIsEditing(false);
+                },
+                onError: (errors) => {
+                    console.error('Errores:', errors);
+                    setMessage({ type: 'error', text: 'Error al actualizar el perfil.' });
+                }
+            });
+        }
     };
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -207,62 +240,23 @@ export default function Profile() {
             <div className="flex h-full flex-1 flex-col gap-6 rounded-xl p-4">
                 <Card className="w-full max-w-2xl mx-auto">
                     <CardHeader>
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <CardTitle className="flex items-center gap-2">
-                                    <User className="h-5 w-5" />
-                                    Mi Perfil Profesional
-                                </CardTitle>
-                                <CardDescription>
-                                    {props.userProfile
-                                        ? 'Revisa y actualiza tu información profesional.'
-                                        : 'Sube tu CV y completa tu información profesional para obtener recomendaciones personalizadas.'
-                                    }
-                                </CardDescription>
-                            </div>
-                            {props.userProfile && (
-                                <div className="flex gap-2">
-                                    {isEditing ? (
-                                        <>
-                                            <Button
-                                                type="button"
-                                                variant="outline"
-                                                size="sm"
-                                                onClick={handleEditToggle}
-                                                disabled={isProcessing}
-                                            >
-                                                <X className="h-4 w-4 mr-2" />
-                                                Cancelar
-                                            </Button>
-                                            <Button
-                                                type="button"
-                                                size="sm"
-                                                onClick={handleUpdate}
-                                                disabled={isProcessing}
-                                            >
-                                                <Save className="h-4 w-4 mr-2" />
-                                                {isProcessing ? 'Guardando...' : 'Guardar'}
-                                            </Button>
-                                        </>
-                                    ) : (
-                                        <Button
-                                            type="button"
-                                            variant="outline"
-                                            size="sm"
-                                            onClick={handleEditToggle}
-                                        >
-                                            <Edit className="h-4 w-4 mr-2" />
-                                            Editar
-                                        </Button>
-                                    )}
-                                </div>
-                            )}
+                        <div className="text-center">
+                            <CardTitle className="flex items-center justify-center gap-2 text-primary text-2xl">
+                                <User className="h-6 w-6" />
+                                Mi Perfil Profesional
+                            </CardTitle>
+                            <CardDescription className="mt-2">
+                                {props.userProfile
+                                    ? 'Revisa y actualiza tu información profesional.'
+                                    : 'Sube tu CV y completa tu información profesional para obtener recomendaciones personalizadas.'
+                                }
+                            </CardDescription>
                         </div>
                     </CardHeader>
                     <CardContent>
                         {message && (
-                            <Alert className={`mb-4 ${message.type === 'error' ? 'border-red-500 bg-red-50 dark:bg-red-950' : 'border-green-500 bg-green-50 dark:bg-green-950'}`}>
-                                <AlertDescription className={message.type === 'error' ? 'text-red-700 dark:text-red-200' : 'text-green-700 dark:text-green-200'}>
+                            <Alert className={`mb-4 ${message.type === 'error' ? 'border-destructive bg-destructive/10 dark:bg-destructive/20' : 'border-green-500 bg-green-50 dark:bg-green-950/50'}`}>
+                                <AlertDescription className={message.type === 'error' ? 'text-destructive' : 'text-green-700 dark:text-green-300 font-medium'}>
                                     {message.text}
                                 </AlertDescription>
                             </Alert>
@@ -270,108 +264,290 @@ export default function Profile() {
 
                         {/* Vista de Lectura - Mostrar datos existentes */}
                         {props.userProfile && !isEditing ? (
-                            <div className="space-y-6">
-                                {/* Posición Deseada */}
-                                <div className="space-y-2">
-                                    <Label className="text-sm font-medium">Puesto Deseada</Label>
-                                    <div className="p-3 bg-muted rounded-lg mt-2">
-                                        {props.userProfile.desired_position || 'No especificada'}
+                            <>
+                                <div className="space-y-6">                                {/* Posición Deseada */}
+                                <div className="space-y-3">
+                                    <Label className="text-sm font-medium text-primary">Posición Deseada</Label>
+                                    <div className="p-4 bg-muted/50 rounded-lg border-l-4 border-l-primary">
+                                        <p className="text-foreground font-medium">
+                                            {props.userProfile.desired_position || 'No especificada'}
+                                        </p>
                                     </div>
-                                </div>
-
-                                {/* Tecnologías */}
-                                <div className="space-y-2">
-                                    <Label className="text-sm font-medium flex items-center gap-2">
+                                </div>                                {/* Tecnologías */}
+                                <div className="space-y-3">
+                                    <Label className="text-sm font-medium flex items-center gap-2 text-primary">
                                         <Code className="h-4 w-4" />
                                         <span className='ml-1'>Tecnologías / Habilidades</span>
                                     </Label>
-                                    <div className="flex flex-wrap gap-2">
-                                        {props.userProfile.technologies && props.userProfile.technologies.length > 0 ? (
-                                            props.userProfile.technologies.map((tech, index) => (
-                                                <Badge key={index} variant="secondary">
-                                                    {tech}
-                                                </Badge>
-                                            ))
-                                        ) : (
-                                            <div className="p-3 bg-muted rounded-lg text-muted-foreground">
-                                                No hay tecnologías especificadas
-                                            </div>
-                                        )}
+                                    <div className="p-4 bg-muted/50 rounded-lg border border-primary/20">
+                                        <div className="flex flex-wrap gap-2">
+                                            {props.userProfile.technologies && props.userProfile.technologies.length > 0 ? (
+                                                props.userProfile.technologies.map((tech, index) => (
+                                                    <Badge
+                                                        key={index}
+                                                        className="bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+                                                    >
+                                                        {tech}
+                                                    </Badge>
+                                                ))
+                                            ) : (
+                                                <div className="p-3 bg-muted rounded-lg text-muted-foreground italic">
+                                                    No hay tecnologías especificadas
+                                                </div>
+                                            )}
+                                        </div>
                                     </div>
-                                </div>
-
-                                {/* CV Información */}
+                                </div>                                {/* CV Información */}
                                 {props.userProfile.parsed_cv && (
-                                    <div className="space-y-2">
-                                        <Label className="text-sm font-medium flex items-center gap-2">
+                                    <div className="space-y-3">
+                                        <Label className="text-sm font-medium flex items-center gap-2 text-primary">
                                             <FileText className="h-4 w-4" />
                                             CV Procesado
                                         </Label>
-                                        <div className="p-3 bg-muted rounded-lg text-sm">
-                                            <p className="text-muted-foreground">
-                                                CV procesado exitosamente - {new Date(props.userProfile.updated_at).toLocaleDateString('es-ES')}
-                                            </p>
+                                        <div className="p-4 bg-muted/50 rounded-lg border border-primary/20">
+                                            <div className="flex items-center justify-between">
+                                                <div className="flex-1">
+                                                    <p className="text-sm font-medium text-foreground">
+                                                        {props.userProfile.cv_filename || 'CV procesado exitosamente'}
+                                                    </p>
+                                                    <p className="text-xs text-green-600 dark:text-green-400">
+                                                        Procesado el {new Date(props.userProfile.updated_at).toLocaleDateString('es-ES')}
+                                                    </p>
+                                                </div>
+                                                <div className="flex items-center text-green-600 dark:text-green-400">
+                                                    <FileText className="h-4 w-4" />
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 )}
-                            </div>
-                        ) : (
-                            /* Formulario de edición o creación inicial */
-                            <form onSubmit={props.userProfile && isEditing ? handleUpdate : handleSubmit} className="space-y-6">
-                                {/* Upload CV - Solo mostrar si no hay perfil existente */}
-                                {!props.userProfile && (
-                                    <div className="space-y-2">
-                                        <Label htmlFor="cv_file" className="text-sm font-medium">
-                                            Subir CV (PDF) *
+                                </div>
+
+                                {/* Botón de Editar Centrado */}
+                                <div className="flex justify-center pt-6 mt-6 border-t border-border">
+                                    <Button
+                                        type="button"
+                                        onClick={handleEditToggle}
+                                        className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-3 text-base font-medium shadow-lg hover:shadow-xl transition-all duration-200"
+                                        size="lg"
+                                    >
+                                        <Edit className="h-5 w-5 mr-2" />
+                                        Editar Perfil
+                                    </Button>
+                                </div>
+                            </>
+                        ) : isEditing ? (
+                            /* Formulario de edición */
+                            <>
+                                <form onSubmit={handleUpdate} className="space-y-6">
+                                    {/* Subir Nuevo CV (Opcional) */}
+                                    <div className="space-y-3">
+                                        <Label className="text-sm font-medium text-primary">
+                                            Subir Nuevo CV (Opcional)
                                         </Label>
-                                        <div
-                                            className={`relative border-2 border-dashed rounded-lg p-6 text-center transition-colors ${
-                                                dragOver
-                                                    ? 'border-primary bg-primary/5'
-                                                    : 'border-border hover:border-primary/50'
-                                            }`}
-                                            onDrop={handleDrop}
-                                            onDragOver={handleDragOver}
-                                            onDragLeave={handleDragLeave}
-                                        >
-                                            <input
-                                                type="file"
-                                                id="cv_file"
-                                                accept=".pdf"
-                                                onChange={(e) => {
-                                                    const file = e.target.files?.[0];
-                                                    if (file) handleFileSelect(file);
-                                                }}
-                                                className="sr-only"
-                                            />
-                                            <label
-                                                htmlFor="cv_file"
-                                                className="cursor-pointer flex flex-col items-center gap-2"
+                                        <div className="p-4 bg-muted/30 rounded-lg border border-primary/20">
+                                            <p className="text-sm text-muted-foreground mb-3">
+                                                Si deseas actualizar tu CV, puedes subir un nuevo archivo aquí. Si no subes ningún archivo, se mantendrá el CV actual.
+                                            </p>
+                                            <div
+                                                className={`relative border-2 border-dashed rounded-lg p-4 text-center transition-colors ${
+                                                    dragOver
+                                                        ? 'border-primary bg-primary/5'
+                                                        : 'border-primary/30 hover:border-primary'
+                                                }`}
+                                                onDrop={handleDrop}
+                                                onDragOver={handleDragOver}
+                                                onDragLeave={handleDragLeave}
                                             >
-                                                <Upload className="h-8 w-8 text-muted-foreground" />
-                                                {selectedFile ? (
-                                                    <div className="flex items-center gap-2 text-sm">
-                                                        <FileText className="h-4 w-4" />
-                                                        <span className="font-medium">{selectedFile.name}</span>
-                                                    </div>
-                                                ) : (
-                                                    <div className="text-sm text-muted-foreground">
-                                                        <span className="font-medium">Haz clic para subir</span> o arrastra tu CV aquí
-                                                        <br />
-                                                        Solo archivos PDF (máx. 10MB)
-                                                    </div>
-                                                )}
-                                            </label>
+                                                <input
+                                                    type="file"
+                                                    id="cv_file_edit"
+                                                    accept=".pdf"
+                                                    onChange={(e) => {
+                                                        const file = e.target.files?.[0];
+                                                        if (file) handleFileSelect(file);
+                                                    }}
+                                                    className="sr-only"
+                                                />
+                                                <label
+                                                    htmlFor="cv_file_edit"
+                                                    className="cursor-pointer flex flex-col items-center gap-2"
+                                                >
+                                                    <Upload className="h-6 w-6 text-primary" />
+                                                    {selectedFile ? (
+                                                        <div className="flex items-center gap-2 text-sm">
+                                                            <FileText className="h-4 w-4 text-green-600 dark:text-green-400" />
+                                                            <span className="font-medium text-foreground">{selectedFile.name}</span>
+                                                        </div>
+                                                    ) : (
+                                                        <div className="text-sm text-muted-foreground">
+                                                            <span className="font-medium text-primary">Haz clic para subir</span> o arrastra un nuevo CV aquí
+                                                            <br />
+                                                            <span className="text-xs">Solo archivos PDF (máx. 10MB)</span>
+                                                        </div>
+                                                    )}
+                                                </label>
+                                            </div>
+                                            {selectedFile && (
+                                                <Button
+                                                    type="button"
+                                                    variant="outline"
+                                                    size="sm"
+                                                    onClick={() => setSelectedFile(null)}
+                                                    className="mt-2 border-destructive text-destructive hover:bg-destructive hover:text-destructive-foreground"
+                                                >
+                                                    <X className="h-4 w-4 mr-1" />
+                                                    Quitar archivo
+                                                </Button>
+                                            )}
                                         </div>
-                                        {errors.cv_file && (
-                                            <p className="text-sm text-red-600 dark:text-red-400">{errors.cv_file}</p>
+                                    </div>
+
+                                    {/* Desired Position */}
+                                    <div className="space-y-2">
+                                        <Label htmlFor="desired_position" className="text-sm font-medium text-primary">
+                                            Posición Deseada
+                                        </Label>
+                                        <Input
+                                            id="desired_position"
+                                            type="text"
+                                            placeholder="ej. Desarrollador Frontend Senior"
+                                            value={data.desired_position}
+                                            onChange={(e) => setData('desired_position', e.target.value)}
+                                            className="border-primary/30 focus:border-primary focus:ring-primary"
+                                        />
+                                        {errors.desired_position && (
+                                            <p className="text-sm text-destructive">{errors.desired_position}</p>
                                         )}
                                     </div>
-                                )}
+
+                                    {/* Technologies */}
+                                    <div className="space-y-2">
+                                        <Label className="text-sm font-medium flex items-center gap-2 text-primary">
+                                            <Code className="h-4 w-4" />
+                                            Tecnologías
+                                        </Label>
+                                        <div className="space-y-2">
+                                            {technologies.map((tech, index) => (
+                                                <div key={index} className="flex items-center gap-2">
+                                                    <Input
+                                                        type="text"
+                                                        placeholder="ej. React, TypeScript, Laravel..."
+                                                        value={tech}
+                                                        onChange={(e) => updateTechnology(index, e.target.value)}
+                                                        className="flex-1 border-primary/30 focus:border-primary focus:ring-primary"
+                                                    />
+                                                    {technologies.length > 1 && (
+                                                        <Button
+                                                            type="button"
+                                                            variant="outline"
+                                                            size="icon"
+                                                            onClick={() => removeTechnology(index)}
+                                                            className="border-destructive text-destructive hover:bg-destructive hover:text-destructive-foreground"
+                                                        >
+                                                            <X className="h-4 w-4" />
+                                                        </Button>
+                                                    )}
+                                                </div>
+                                            ))}
+                                            <Button
+                                                type="button"
+                                                variant="outline"
+                                                size="sm"
+                                                onClick={addTechnology}
+                                                className="flex items-center gap-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground"
+                                            >
+                                                <Plus className="h-4 w-4" />
+                                                Agregar Tecnología
+                                            </Button>
+                                        </div>
+                                        {errors.technologies && (
+                                            <p className="text-sm text-destructive">{errors.technologies}</p>
+                                        )}
+                                    </div>
+                                </form>
+
+                                {/* Botones de Acción Centrados */}
+                                <div className="flex justify-center gap-4 pt-6 mt-6 border-t border-border">
+                                    <Button
+                                        type="button"
+                                        variant="outline"
+                                        onClick={handleEditToggle}
+                                        disabled={isProcessing}
+                                        className="border-muted-foreground text-muted-foreground hover:bg-muted px-6 py-2"
+                                    >
+                                        <X className="h-4 w-4 mr-2" />
+                                        Cancelar
+                                    </Button>
+                                    <Button
+                                        type="button"
+                                        onClick={handleUpdate}
+                                        disabled={isProcessing}
+                                        className="bg-green-600 hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-600 text-white px-6 py-2 shadow-lg hover:shadow-xl transition-all duration-200"
+                                    >
+                                        <Save className="h-4 w-4 mr-2" />
+                                        {isProcessing
+                                            ? (selectedFile ? 'Procesando CV...' : 'Guardando...')
+                                            : (selectedFile ? 'Procesar Nuevo CV' : 'Guardar Cambios')
+                                        }
+                                    </Button>
+                                </div>
+                            </>
+                        ) : (
+                            /* Formulario de creación inicial */
+                            <form onSubmit={handleSubmit} className="space-y-6">
+                                {/* Upload CV */}
+                                <div className="space-y-2">
+                                    <Label htmlFor="cv_file" className="text-sm font-medium text-primary">
+                                        Subir CV (PDF) *
+                                    </Label>
+                                    <div
+                                        className={`relative border-2 border-dashed rounded-lg p-6 text-center transition-colors ${
+                                            dragOver
+                                                ? 'border-primary bg-primary/5'
+                                                : 'border-primary/30 hover:border-primary'
+                                        }`}
+                                        onDrop={handleDrop}
+                                        onDragOver={handleDragOver}
+                                        onDragLeave={handleDragLeave}
+                                    >
+                                        <input
+                                            type="file"
+                                            id="cv_file"
+                                            accept=".pdf"
+                                            onChange={(e) => {
+                                                const file = e.target.files?.[0];
+                                                if (file) handleFileSelect(file);
+                                            }}
+                                            className="sr-only"
+                                        />
+                                        <label
+                                            htmlFor="cv_file"
+                                            className="cursor-pointer flex flex-col items-center gap-2"
+                                        >
+                                            <Upload className="h-8 w-8 text-primary" />
+                                            {selectedFile ? (
+                                                <div className="flex items-center gap-2 text-sm">
+                                                    <FileText className="h-4 w-4 text-green-600 dark:text-green-400" />
+                                                    <span className="font-medium text-foreground">{selectedFile.name}</span>
+                                                </div>
+                                            ) : (
+                                                <div className="text-sm text-muted-foreground">
+                                                    <span className="font-medium text-primary">Haz clic para subir</span> o arrastra tu CV aquí
+                                                    <br />
+                                                    <span className="text-xs">Solo archivos PDF (máx. 10MB)</span>
+                                                </div>
+                                            )}
+                                        </label>
+                                    </div>
+                                    {errors.cv_file && (
+                                        <p className="text-sm text-destructive">{errors.cv_file}</p>
+                                    )}
+                                </div>
 
                                 {/* Desired Position */}
                                 <div className="space-y-2">
-                                    <Label htmlFor="desired_position" className="text-sm font-medium">
+                                    <Label htmlFor="desired_position" className="text-sm font-medium text-primary">
                                         Posición Deseada
                                     </Label>
                                     <Input
@@ -380,15 +556,16 @@ export default function Profile() {
                                         placeholder="ej. Desarrollador Frontend Senior"
                                         value={data.desired_position}
                                         onChange={(e) => setData('desired_position', e.target.value)}
+                                        className="border-primary/30 focus:border-primary focus:ring-primary"
                                     />
                                     {errors.desired_position && (
-                                        <p className="text-sm text-red-600 dark:text-red-400">{errors.desired_position}</p>
+                                        <p className="text-sm text-destructive">{errors.desired_position}</p>
                                     )}
                                 </div>
 
                                 {/* Technologies */}
                                 <div className="space-y-2">
-                                    <Label className="text-sm font-medium flex items-center gap-2">
+                                    <Label className="text-sm font-medium flex items-center gap-2 text-primary">
                                         <Code className="h-4 w-4" />
                                         Tecnologías
                                     </Label>
@@ -400,7 +577,7 @@ export default function Profile() {
                                                     placeholder="ej. React, TypeScript, Laravel..."
                                                     value={tech}
                                                     onChange={(e) => updateTechnology(index, e.target.value)}
-                                                    className="flex-1"
+                                                    className="flex-1 border-primary/30 focus:border-primary focus:ring-primary"
                                                 />
                                                 {technologies.length > 1 && (
                                                     <Button
@@ -408,6 +585,7 @@ export default function Profile() {
                                                         variant="outline"
                                                         size="icon"
                                                         onClick={() => removeTechnology(index)}
+                                                        className="border-destructive text-destructive hover:bg-destructive hover:text-destructive-foreground"
                                                     >
                                                         <X className="h-4 w-4" />
                                                     </Button>
@@ -419,28 +597,28 @@ export default function Profile() {
                                             variant="outline"
                                             size="sm"
                                             onClick={addTechnology}
-                                            className="flex items-center gap-2"
+                                            className="flex items-center gap-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground"
                                         >
                                             <Plus className="h-4 w-4" />
                                             Agregar Tecnología
                                         </Button>
                                     </div>
                                     {errors.technologies && (
-                                        <p className="text-sm text-red-600 dark:text-red-400">{errors.technologies}</p>
+                                        <p className="text-sm text-destructive">{errors.technologies}</p>
                                     )}
                                 </div>
 
                                 {/* Submit Button */}
-                                <Button
-                                    type="submit"
-                                    className="w-full"
-                                    disabled={isProcessing || (!props.userProfile && !selectedFile)}
-                                >
-                                    {isProcessing ?
-                                        (props.userProfile && isEditing ? 'Actualizando...' : 'Procesando...') :
-                                        (props.userProfile && isEditing ? 'Actualizar Perfil' : 'Guardar Perfil')
-                                    }
-                                </Button>
+                                <div className="flex justify-center pt-4">
+                                    <Button
+                                        type="submit"
+                                        className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-3 text-base font-medium shadow-lg hover:shadow-xl transition-all duration-200"
+                                        disabled={isProcessing || !selectedFile}
+                                        size="lg"
+                                    >
+                                        {isProcessing ? 'Procesando...' : 'Crear Perfil'}
+                                    </Button>
+                                </div>
                             </form>
                         )}
                     </CardContent>

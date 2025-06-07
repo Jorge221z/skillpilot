@@ -10,7 +10,8 @@ class UserProfile extends Model
         'user_id',
         'desired_position',
         'technologies',
-        'parsed_cv'
+        'parsed_cv',
+        'cv_filename'
     ];
 
     protected $casts = [
