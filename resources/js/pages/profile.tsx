@@ -241,9 +241,9 @@ export default function Profile() {
                 <Card className="w-full max-w-2xl mx-auto">
                     <CardHeader>
                         <div className="text-center">
-                            <CardTitle className="flex items-center justify-center gap-2 text-primary text-2xl">
+                            <CardTitle className="flex items-center justify-center gap-3 text-primary text-2xl">
                                 <User className="h-6 w-6" />
-                                Mi Perfil Profesional
+                                Mis preferencias profesionales
                             </CardTitle>
                             <CardDescription className="mt-2">
                                 {props.userProfile
@@ -265,15 +265,17 @@ export default function Profile() {
                         {/* Vista de Lectura - Mostrar datos existentes */}
                         {props.userProfile && !isEditing ? (
                             <>
-                                <div className="space-y-6">                                {/* Posición Deseada */}
+                                <div className="space-y-6">
+                                    {/* Posición Deseada */}
                                 <div className="space-y-3">
-                                    <Label className="text-sm font-medium text-primary">Posición Deseada</Label>
-                                    <div className="p-4 bg-muted/50 rounded-lg border-l-4 border-l-primary">
+                                    <Label className="text-sm font-medium text-primary">Puesto Deseado</Label>
+                                    <div className="p-4 bg-muted/50 rounded-lg border-l-4 border-l-primary mt-3">
                                         <p className="text-foreground font-medium">
                                             {props.userProfile.desired_position || 'No especificada'}
                                         </p>
                                     </div>
-                                </div>                                {/* Tecnologías */}
+                                </div>
+                                {/* Tecnologías */}
                                 <div className="space-y-3">
                                     <Label className="text-sm font-medium flex items-center gap-2 text-primary">
                                         <Code className="h-4 w-4" />
@@ -291,18 +293,19 @@ export default function Profile() {
                                                     </Badge>
                                                 ))
                                             ) : (
-                                                <div className="p-3 bg-muted rounded-lg text-muted-foreground italic">
-                                                    No hay tecnologías especificadas
+                                                <div className="p-1 bg-muted rounded-lg text-muted-foreground italic">
+                                                    No hay tecnologías o habilidades especificadas
                                                 </div>
                                             )}
                                         </div>
                                     </div>
-                                </div>                                {/* CV Información */}
+                                </div>
+                                {/* CV Información */}
                                 {props.userProfile.parsed_cv && (
                                     <div className="space-y-3">
                                         <Label className="text-sm font-medium flex items-center gap-2 text-primary">
                                             <FileText className="h-4 w-4" />
-                                            CV Procesado
+                                            CV
                                         </Label>
                                         <div className="p-4 bg-muted/50 rounded-lg border border-primary/20">
                                             <div className="flex items-center justify-between">
