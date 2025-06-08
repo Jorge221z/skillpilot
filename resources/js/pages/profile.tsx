@@ -409,7 +409,7 @@ export default function Profile() {
                                     {/* Desired Position */}
                                     <div className="space-y-2">
                                         <Label htmlFor="desired_position" className="text-sm font-medium text-primary">
-                                            Posición Deseada
+                                            Puesto Deseado
                                         </Label>
                                         <Input
                                             id="desired_position"
@@ -428,7 +428,7 @@ export default function Profile() {
                                     <div className="space-y-2">
                                         <Label className="text-sm font-medium flex items-center gap-2 text-primary">
                                             <Code className="h-4 w-4" />
-                                            Tecnologías
+                                            Tecnologías / Habilidades
                                         </Label>
                                         <div className="space-y-2">
                                             {technologies.map((tech, index) => (
@@ -461,7 +461,7 @@ export default function Profile() {
                                                 className="flex items-center gap-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground"
                                             >
                                                 <Plus className="h-4 w-4" />
-                                                Agregar Tecnología
+                                                Agregar
                                             </Button>
                                         </div>
                                         {errors.technologies && (
