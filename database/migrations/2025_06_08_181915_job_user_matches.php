@@ -11,13 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('user_profiles', function (Blueprint $table) {
+        Schema::create('user_job_offers', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->string('desired_position')->nullable();
-            $table->json('skills')->nullable();
-            $table->longText('parsed_cv')->nullable();
-            $table->string('cv_filename')->nullable();
+            $table->foreignId('job_offer_id')->constrained()->onDelete('cascade');
+            $table->integer('match_score')->nullable();
+            $table->json('tags')->nullable();
+            $table->longText('ai_feedback')->nullable();
+            $table->longText('cover_letter')->nullable();
             $table->timestamps();
         });
     }
@@ -27,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('user_profiles');
+        Schema::dropIfExists('user_job_matches');
     }
 };

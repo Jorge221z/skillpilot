@@ -9,13 +9,13 @@ class UserProfile extends Model
     protected $fillable = [
         'user_id',
         'desired_position',
-        'technologies',
+        'skills',
         'parsed_cv',
         'cv_filename'
     ];
 
     protected $casts = [
-        'technologies' => 'array'
+        'skills' => 'array'
     ];
 
     /**

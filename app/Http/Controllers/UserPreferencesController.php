@@ -18,8 +18,8 @@ class UserPreferencesController extends Controller
         $request->validate([
             'cv_file' => 'required|file|mimes:pdf|max:10240', // 10MB max
             'desired_position' => 'nullable|string|max:255',
-            'technologies' => 'nullable|array',
-            'technologies.*' => 'string|max:100'
+            'skills' => 'nullable|array',
+            'skills.*' => 'string|max:100'
         ]);
 
         try {
@@ -41,7 +41,7 @@ class UserPreferencesController extends Controller
                 ['user_id' => Auth::id()],
                 [
                     'desired_position' => $request->desired_position,
-                    'technologies' => $request->technologies,
+                    'skills' => $request->skills,
                     'parsed_cv' => $cleanedText,
                     'cv_filename' => $cvFile->getClientOriginalName()
                 ]
@@ -82,15 +82,15 @@ class UserPreferencesController extends Controller
     {
         $request->validate([
             'desired_position' => 'nullable|string|max:255',
-            'technologies' => 'nullable|array',
-            'technologies.*' => 'string|max:100'
+            'skills' => 'nullable|array',
+            'skills.*' => 'string|max:100'
         ]);
 
         $userProfile = UserProfile::updateOrCreate(
             ['user_id' => Auth::id()],
             [
                 'desired_position' => $request->desired_position,
-                'technologies' => $request->technologies,
+                'skills' => $request->skills,
             ]
         );
 

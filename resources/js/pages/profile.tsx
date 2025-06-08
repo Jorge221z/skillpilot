@@ -20,7 +20,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 interface UserProfile {
     id: number;
     desired_position: string | null;
-    technologies: string[] | null;
+    skills: string[] | null;
     parsed_cv: string | null;
     cv_filename: string | null;
     created_at: string;
@@ -37,7 +37,7 @@ export default function Profile() {
     }>();
 
     const [isEditing, setIsEditing] = useState(false);
-    const [technologies, setTechnologies] = useState<string[]>(['']);
+    const [skills, setSkills] = useState<string[]>(['']);
     const [dragOver, setDragOver] = useState(false);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
@@ -46,7 +46,7 @@ export default function Profile() {
     const { data, setData, post, processing, errors, reset } = useForm({
         cv_file: null as File | null,
         desired_position: '',
-        technologies: [] as string[],
+        skills: [] as string[],
     });
 
     // Inicializar datos del perfil existente
@@ -55,9 +55,9 @@ export default function Profile() {
             setData({
                 cv_file: null,
                 desired_position: props.userProfile.desired_position || '',
-                technologies: props.userProfile.technologies || [],
+                skills: props.userProfile.skills || [],
             });
-            setTechnologies(props.userProfile.technologies || ['']);
+            setSkills(props.userProfile.skills || ['']);
         }
     }, [props.userProfile]);
 
@@ -78,9 +78,9 @@ export default function Profile() {
                 setData({
                     cv_file: null,
                     desired_position: props.userProfile.desired_position || '',
-                    technologies: props.userProfile.technologies || [],
+                    skills: props.userProfile.skills || [],
                 });
-                setTechnologies(props.userProfile.technologies || ['']);
+                setSkills(props.userProfile.skills || ['']);
             }
             setSelectedFile(null);
         }
@@ -92,7 +92,7 @@ export default function Profile() {
         e.preventDefault();
 
         // Filtrar tecnologías vacías
-        const validTechnologies = technologies.filter(tech => tech.trim() !== '');
+        const validSkills = skills.filter(tech => tech.trim() !== '');
 
         // Si hay un nuevo CV seleccionado, procesarlo con el endpoint de procesamiento
         if (selectedFile) {
@@ -101,8 +101,8 @@ export default function Profile() {
             formData.append('cv_file', selectedFile);
             formData.append('desired_position', data.desired_position);
 
-            validTechnologies.forEach((tech, index) => {
-                formData.append(`technologies[${index}]`, tech);
+            validSkills.forEach((tech, index) => {
+                formData.append(`skills[${index}]`, tech);
             });
 
             // Usar router.post para procesar el nuevo CV
@@ -127,7 +127,7 @@ export default function Profile() {
             // Solo actualizar datos sin procesar CV
             router.put('/profile/update', {
                 desired_position: data.desired_position,
-                technologies: validTechnologies,
+                skills: validSkills,
             }, {
                 onStart: () => {
                     setMessage(null);
@@ -156,15 +156,15 @@ export default function Profile() {
         }
 
         // Filtrar tecnologías vacías
-        const validTechnologies = technologies.filter(tech => tech.trim() !== '');
+        const validSkills = skills.filter(tech => tech.trim() !== '');
 
         // Crear FormData para enviar archivo
         const formData = new FormData();
         formData.append('cv_file', selectedFile);
         formData.append('desired_position', data.desired_position);
 
-        validTechnologies.forEach((tech, index) => {
-            formData.append(`technologies[${index}]`, tech);
+        validSkills.forEach((tech, index) => {
+            formData.append(`skills[${index}]`, tech);
         });
 
         // Usar router.post para enviar FormData
@@ -179,7 +179,7 @@ export default function Profile() {
             onSuccess: () => {
                 setSelectedFile(null);
                 reset();
-                setTechnologies(['']);
+                setSkills(['']);
                 setIsEditing(false);
             },
             onError: (errors) => {
@@ -218,20 +218,20 @@ export default function Profile() {
     };
 
     const addTechnology = () => {
-        setTechnologies([...technologies, '']);
+        setSkills([...skills, '']);
     };
 
     const removeTechnology = (index: number) => {
-        if (technologies.length > 1) {
-            const newTechnologies = technologies.filter((_, i) => i !== index);
-            setTechnologies(newTechnologies);
+        if (skills.length > 1) {
+            const newSkills = skills.filter((_, i) => i !== index);
+            setSkills(newSkills);
         }
     };
 
     const updateTechnology = (index: number, value: string) => {
-        const newTechnologies = [...technologies];
-        newTechnologies[index] = value;
-        setTechnologies(newTechnologies);
+        const newSkills = [...skills];
+        newSkills[index] = value;
+        setSkills(newSkills);
     };
 
     return (
@@ -283,8 +283,8 @@ export default function Profile() {
                                     </Label>
                                     <div className="p-4 bg-muted/50 rounded-lg border border-primary/20">
                                         <div className="flex flex-wrap gap-2">
-                                            {props.userProfile.technologies && props.userProfile.technologies.length > 0 ? (
-                                                props.userProfile.technologies.map((tech, index) => (
+                                            {props.userProfile.skills && props.userProfile.skills.length > 0 ? (
+                                                props.userProfile.skills.map((tech, index) => (
                                                     <Badge
                                                         key={index}
                                                         className="bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
@@ -424,14 +424,14 @@ export default function Profile() {
                                         )}
                                     </div>
 
-                                    {/* Technologies */}
+                                    {/* Skills */}
                                     <div className="space-y-2">
                                         <Label className="text-sm font-medium flex items-center gap-2 text-primary">
                                             <Code className="h-4 w-4" />
                                             Tecnologías / Habilidades
                                         </Label>
                                         <div className="space-y-2">
-                                            {technologies.map((tech, index) => (
+                                            {skills.map((tech, index) => (
                                                 <div key={index} className="flex items-center gap-2">
                                                     <Input
                                                         type="text"
@@ -440,7 +440,7 @@ export default function Profile() {
                                                         onChange={(e) => updateTechnology(index, e.target.value)}
                                                         className="flex-1 border-primary/30 focus:border-primary focus:ring-primary"
                                                     />
-                                                    {technologies.length > 1 && (
+                                                    {skills.length > 1 && (
                                                         <Button
                                                             type="button"
                                                             variant="outline"
@@ -464,8 +464,8 @@ export default function Profile() {
                                                 Agregar
                                             </Button>
                                         </div>
-                                        {errors.technologies && (
-                                            <p className="text-sm text-destructive">{errors.technologies}</p>
+                                        {errors.skills && (
+                                            <p className="text-sm text-destructive">{errors.skills}</p>
                                         )}
                                     </div>
                                 </form>
@@ -566,14 +566,14 @@ export default function Profile() {
                                     )}
                                 </div>
 
-                                {/* Technologies */}
+                                {/* Skills */}
                                 <div className="space-y-2">
                                     <Label className="text-sm font-medium flex items-center gap-2 text-primary">
                                         <Code className="h-4 w-4" />
                                         Tecnologías
                                     </Label>
                                     <div className="space-y-2">
-                                        {technologies.map((tech, index) => (
+                                        {skills.map((tech, index) => (
                                             <div key={index} className="flex items-center gap-2">
                                                 <Input
                                                     type="text"
@@ -582,7 +582,7 @@ export default function Profile() {
                                                     onChange={(e) => updateTechnology(index, e.target.value)}
                                                     className="flex-1 border-primary/30 focus:border-primary focus:ring-primary"
                                                 />
-                                                {technologies.length > 1 && (
+                                                {skills.length > 1 && (
                                                     <Button
                                                         type="button"
                                                         variant="outline"
@@ -606,8 +606,8 @@ export default function Profile() {
                                             Agregar Tecnología
                                         </Button>
                                     </div>
-                                    {errors.technologies && (
-                                        <p className="text-sm text-destructive">{errors.technologies}</p>
+                                    {errors.skills && (
+                                        <p className="text-sm text-destructive">{errors.skills}</p>
                                     )}
                                 </div>
 

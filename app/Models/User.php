@@ -55,4 +55,9 @@ class User extends Authenticatable
     return $this->hasOne(UserProfile::class);
     }
 
+    public function jobMatches()
+    {
+    return $this->hasMany(UserJobOffer::class);
+    }
+
 }
