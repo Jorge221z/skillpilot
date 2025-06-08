@@ -8,7 +8,7 @@ import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head, useForm, router, usePage } from '@inertiajs/react';
 import { useState, useEffect } from 'react';
-import { Upload, FileText, User, Code, Plus, X, Edit, Save } from 'lucide-react';
+import { Upload, FileText, User, Code, Plus, X, Edit, Save, Trash } from 'lucide-react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -397,9 +397,9 @@ export default function Profile() {
                                                     variant="outline"
                                                     size="sm"
                                                     onClick={() => setSelectedFile(null)}
-                                                    className="mt-2 border-destructive text-destructive hover:bg-destructive hover:text-destructive-foreground"
+                                                    className="mt-2 border-muted-foreground text-muted-foreground hover:bg-muted hover:text-foreground"
                                                 >
-                                                    <X className="h-4 w-4 mr-1" />
+                                                    <Trash className="h-4 w-4 mr-1" />
                                                     Quitar archivo
                                                 </Button>
                                             )}
@@ -435,7 +435,7 @@ export default function Profile() {
                                                 <div key={index} className="flex items-center gap-2">
                                                     <Input
                                                         type="text"
-                                                        placeholder="ej. React, TypeScript, Laravel..."
+                                                        placeholder="ej. React, Git, Prompt engineering..."
                                                         value={tech}
                                                         onChange={(e) => updateTechnology(index, e.target.value)}
                                                         className="flex-1 border-primary/30 focus:border-primary focus:ring-primary"
@@ -446,9 +446,9 @@ export default function Profile() {
                                                             variant="outline"
                                                             size="icon"
                                                             onClick={() => removeTechnology(index)}
-                                                            className="border-destructive text-destructive hover:bg-destructive hover:text-destructive-foreground"
+                                                            className="border-muted-foreground text-muted-foreground hover:bg-muted hover:text-foreground"
                                                         >
-                                                            <X className="h-4 w-4" />
+                                                            <Trash className="h-4 w-4" />
                                                         </Button>
                                                     )}
                                                 </div>
