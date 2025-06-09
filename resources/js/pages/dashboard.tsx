@@ -6,9 +6,11 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { ExternalLink, Search, Building2, MapPin, Calendar } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ExternalLink, Search, Building2, MapPin, Calendar, Brain } from 'lucide-react';
 import { toast } from 'sonner';
 import { useState } from 'react';
+import AIAnalysisCard from '@/components/AIAnalysisCard';
 
 interface JobOffer {
     id: number;
@@ -27,7 +29,7 @@ interface JobMatch {
     job_offer_id: number;
     match_score: number | null;
     tags: string[] | null;
-    ai_feedback: string | null;
+    ai_feedback: string[] | null;
     cover_letter: string | null;
     created_at: string;
     job_offer: JobOffer;
@@ -50,6 +52,7 @@ export default function Dashboard({ jobMatches, totalMatches }: DashboardProps) 
     const [selectedJobTags, setSelectedJobTags] = useState<string[]>([]);
     const [selectedJobTitle, setSelectedJobTitle] = useState<string>('');
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [jobMatchesState, setJobMatchesState] = useState<JobMatch[]>(jobMatches);
 
     const handleFetchJobs = () => {
         post(route('jobs.fetch-and-match'), {
@@ -72,6 +75,22 @@ export default function Dashboard({ jobMatches, totalMatches }: DashboardProps) 
         setSelectedJobTags(tags);
         setSelectedJobTitle(jobTitle);
         setIsModalOpen(true);
+    };
+
+    const handleAnalysisComplete = (jobMatchId: number, analysisData: any) => {
+        setJobMatchesState(prevMatches =>
+            prevMatches.map(match =>
+                match.id === jobMatchId
+                    ? {
+                        ...match,
+                        ai_feedback: analysisData.recomendaciones,
+                        cover_letter: analysisData.carta,
+                        match_score: analysisData.match_score
+                    }
+                    : match
+            )
+        );
+        toast.success('¡Análisis completado con éxito!');
     };
 
     return (
@@ -141,7 +160,7 @@ export default function Dashboard({ jobMatches, totalMatches }: DashboardProps) 
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
-                        {jobMatches.length === 0 ? (
+                        {jobMatchesState.length === 0 ? (
                             <div className="text-center py-8">
                                 <div className="relative min-h-[200px] overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
                                     <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
@@ -161,71 +180,97 @@ export default function Dashboard({ jobMatches, totalMatches }: DashboardProps) 
                                 </div>
                             </div>
                         ) : (
-                            jobMatches.map((match) => (
-                                <Card key={match.id} className="hover:shadow-md transition-shadow">
-                                    <CardHeader>
-                                        <div className="flex justify-between items-start">
-                                            <div className="space-y-1">
-                                                <CardTitle className="text-lg">
-                                                    {match.job_offer.title}
-                                                </CardTitle>
-                                                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                                                    <Building2 className="h-4 w-4" />
-                                                    <span>{match.job_offer.company}</span>
-                                                    {match.job_offer.location && (
-                                                        <>
-                                                            <MapPin className="h-4 w-4 ml-2" />
-                                                            <span>{match.job_offer.location}</span>
-                                                        </>
-                                                    )}
+                            jobMatchesState.map((match) => (
+                                <div key={match.id} className="space-y-4">
+                                    <Card className="hover:shadow-md transition-shadow">
+                                        <CardHeader>
+                                            <div className="flex justify-between items-start">
+                                                <div className="space-y-1">
+                                                    <CardTitle className="text-lg">
+                                                        {match.job_offer.title}
+                                                    </CardTitle>
+                                                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                                        <Building2 className="h-4 w-4" />
+                                                        <span>{match.job_offer.company}</span>
+                                                        {match.job_offer.location && (
+                                                            <>
+                                                                <MapPin className="h-4 w-4 ml-2" />
+                                                                <span>{match.job_offer.location}</span>
+                                                            </>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                                <div className="flex gap-2">
+                                                    <Badge variant="secondary" className="text-xs">
+                                                        {match.job_offer.source}
+                                                    </Badge>
+                                                    <Button
+                                                        size="sm"
+                                                        variant="outline"
+                                                        asChild
+                                                    >
+                                                        <a
+                                                            href={match.job_offer.url}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="flex items-center gap-1"
+                                                        >
+                                                            <ExternalLink className="h-3 w-3" />
+                                                            Ver Oferta
+                                                        </a>
+                                                    </Button>
                                                 </div>
                                             </div>
-                                            <div className="flex gap-2">
-                                                <Badge variant="secondary" className="text-xs">
-                                                    {match.job_offer.source}
-                                                </Badge>
-                                                <Button
-                                                    size="sm"
-                                                    variant="outline"
-                                                    asChild
-                                                >
-                                                    <a
-                                                        href={match.job_offer.url}
-                                                        target="_blank"
-                                                        rel="noopener noreferrer"
-                                                        className="flex items-center gap-1"
-                                                    >
-                                                        <ExternalLink className="h-3 w-3" />
-                                                        Ver Oferta
-                                                    </a>
-                                                </Button>
-                                            </div>
-                                        </div>
-                                    </CardHeader>
-                                    <CardContent>
-                                        <p className="text-sm text-muted-foreground mb-4">
-                                            {truncateText(match.job_offer.description, 200)}
-                                        </p>
-                                        {match.job_offer.tags && match.job_offer.tags.length > 0 && (
-                                            <div className="flex flex-wrap gap-2">
-                                                {match.job_offer.tags.slice(0, 6).map((tag, index) => (
-                                                    <Badge key={index} variant="outline" className="text-xs">
-                                                        {tag}
-                                                    </Badge>
-                                                ))}
-                                                {match.job_offer.tags.length > 6 && (
-                                                    <Badge
-                                                        variant="outline"
-                                                        className="text-xs cursor-pointer hover:bg-primary hover:text-primary-foreground transition-colors"
-                                                        onClick={() => openTagsModal(match.job_offer.tags!, match.job_offer.title)}
-                                                    >
-                                                        +{match.job_offer.tags.length - 6} más
-                                                    </Badge>
-                                                )}
-                                            </div>
-                                        )}
-                                    </CardContent>
-                                </Card>
+                                        </CardHeader>
+                                        <CardContent>
+                                            <Tabs defaultValue="details" className="w-full">
+                                                <TabsList className="grid w-full grid-cols-2">
+                                                    <TabsTrigger value="details">Detalles de la Oferta</TabsTrigger>
+                                                    <TabsTrigger value="ai-analysis" className="flex items-center gap-2">
+                                                        <Brain className="h-4 w-4" />
+                                                        Análisis IA
+                                                    </TabsTrigger>
+                                                </TabsList>
+
+                                                <TabsContent value="details" className="mt-4">
+                                                    <div className="space-y-4">
+                                                        <p className="text-sm text-muted-foreground">
+                                                            {truncateText(match.job_offer.description, 300)}
+                                                        </p>
+                                                        {match.job_offer.tags && match.job_offer.tags.length > 0 && (
+                                                            <div className="space-y-2">
+                                                                <h4 className="text-sm font-medium">Habilidades Requeridas:</h4>
+                                                                <div className="flex flex-wrap gap-2">
+                                                                    {match.job_offer.tags.slice(0, 8).map((tag, index) => (
+                                                                        <Badge key={index} variant="outline" className="text-xs">
+                                                                            {tag}
+                                                                        </Badge>
+                                                                    ))}
+                                                                    {match.job_offer.tags.length > 8 && (
+                                                                        <Badge
+                                                                            variant="outline"
+                                                                            className="text-xs cursor-pointer hover:bg-primary hover:text-primary-foreground transition-colors"
+                                                                            onClick={() => openTagsModal(match.job_offer.tags!, match.job_offer.title)}
+                                                                        >
+                                                                            +{match.job_offer.tags.length - 8} más
+                                                                        </Badge>
+                                                                    )}
+                                                                </div>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                </TabsContent>
+
+                                                <TabsContent value="ai-analysis" className="mt-4">
+                                                    <AIAnalysisCard
+                                                        jobMatch={match}
+                                                        onAnalysisComplete={handleAnalysisComplete}
+                                                    />
+                                                </TabsContent>
+                                            </Tabs>
+                                        </CardContent>
+                                    </Card>
+                                </div>
                             ))
                         )}
                     </CardContent>
