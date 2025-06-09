@@ -50,8 +50,7 @@ export default function Dashboard({ jobMatches, totalMatches }: DashboardProps) 
         post(route('jobs.fetch-and-match'), {
             onSuccess: () => {
                 toast.success('¡Búsqueda de ofertas completada!');
-                // Recargar la página para mostrar las nuevas ofertas
-                window.location.reload();
+                // Inertia.js actualizará automáticamente los datos sin recargar la página
             },
             onError: (errors) => {
                 toast.error(errors.message || 'Error al buscar ofertas');
