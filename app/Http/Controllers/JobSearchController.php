@@ -4,12 +4,20 @@ namespace App\Http\Controllers;
 
 use App\Models\UserProfile;
 use App\Models\JobOffer;
+use App\Services\AIService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class JobSearchController extends Controller
 {
+    private AIService $aiService;
+
+    public function __construct(AIService $aiService)
+    {
+        $this->aiService = $aiService;
+    }
     public function fetchAndMatch(Request $request)
     {
         $user = Auth::user(); // Obtener perfil del usuario autenticado
@@ -54,7 +62,8 @@ class JobSearchController extends Controller
             return $titleMatch || $skillMatch; //retorna true si hay coincidencia en el titulo o en las skills(o ambas)//
         });
 
-        // Guardar las ofertas coincidentes en la base de datos
+        // Guardar las ofertas coincidentes en la base de datos y analizarlas con IA
+        $processedCount = 0;
         foreach ($matches as $offer) {
             // Verificar que los campos obligatorios existen
             if (!isset($offer['position']) || !isset($offer['company']) || !isset($offer['url'])) {
@@ -79,17 +88,74 @@ class JobSearchController extends Controller
                 ]
             );
 
-            // Crear la relación usuario-oferta en job_matches
-            $user->jobMatches()->updateOrCreate(
+            // Crear la relación usuario-oferta en user_job_offers
+            $userJobOffer = $user->jobMatches()->updateOrCreate(
                 ['job_offer_id' => $jobOffer->id],
                 [
                     'user_id' => $user->id,
                     'job_offer_id' => $jobOffer->id,
                 ]
             );
+
+            // Analizar con IA y guardar feedback y carta
+            $this->processWithAI($user, $jobOffer, $userJobOffer);
+            $processedCount++;
         }
+
         // Redirigir de vuelta con mensaje de éxito
-        return back()->with('success', 'Ofertas de trabajo coincidentes encontradas y guardadas en tu perfil.');
+        return back()->with('success', "Se encontraron {$processedCount} ofertas coincidentes y se analizaron con IA.");
+    }
+
+    /**
+     * Procesa una oferta con IA para generar recomendaciones y carta
+     */
+    private function processWithAI($user, $jobOffer, $userJobOffer)
+    {
+        try {
+            // Preparar datos del usuario
+            $userProfile = [
+                'name' => $user->name,
+                'experience' => $user->profile->parsed_cv ?? '',
+                'skills' => $user->profile->skills ?? [],
+                'desired_position' => $user->profile->desired_position ?? '',
+            ];
+
+            // Preparar datos de la oferta
+            $jobOfferData = [
+                'title' => $jobOffer->title,
+                'company' => $jobOffer->company,
+                'description' => $jobOffer->description,
+                'location' => $jobOffer->location,
+                'tags' => $jobOffer->tags ?? [],
+            ];
+
+            // Llamar al servicio de IA
+            $aiResponse = $this->aiService->analyzeJobMatch($userProfile, $jobOfferData);
+
+            if ($aiResponse['success']) {
+                // Parsear la respuesta JSON de la IA
+                $aiData = json_decode($aiResponse['content'], true);
+
+                if ($aiData && isset($aiData['recomendaciones']) && isset($aiData['carta'])) {
+                    // Actualizar el registro con los datos de la IA
+                    $userJobOffer->update([
+                        'ai_feedback' => json_encode($aiData['recomendaciones']),
+                        'cover_letter' => $aiData['carta'],
+                    ]);
+                } else {
+                    // Si no es JSON válido, guardar el contenido completo como feedback
+                    $userJobOffer->update([
+                        'ai_feedback' => $aiResponse['content'],
+                    ]);
+                }
+            }
+        } catch (\Exception $e) {
+            // Log del error pero no interrumpir el flujo
+            Log::error('Error procesando oferta con IA: ' . $e->getMessage(), [
+                'user_id' => $user->id,
+                'job_offer_id' => $jobOffer->id,
+            ]);
+        }
     }
 
     public function getMatches()
