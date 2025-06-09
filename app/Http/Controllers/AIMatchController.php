@@ -131,6 +131,7 @@ class AIMatchController extends Controller
             $user = User::with('profile')->findOrFail($userId);
             $jobOffer = JobOffer::findOrFail($jobOfferId);
 
+            // Preparar datos del usuario
             $userProfile = [
                 'name' => $user->name,
                 'experience' => $user->profile->parsed_cv ?? '',
@@ -139,19 +140,35 @@ class AIMatchController extends Controller
                 'desired_position' => $user->profile->desired_position ?? '',
             ];
 
+            // Preparar datos de la oferta
             $jobOfferData = [
                 'title' => $jobOffer->title,
                 'company' => $jobOffer->company,
                 'description' => $jobOffer->description,
+                'location' => $jobOffer->location,
+                'tags' => $jobOffer->tags ?? [],
             ];
 
-            $coverLetter = $this->aiService->generateCoverLetter($userProfile, $jobOfferData);
+            // Llamar al servicio de IA (que devuelve análisis completo)
+            $analysis = $this->aiService->analyzeJobMatch($userProfile, $jobOfferData);
 
-            if (!$coverLetter) {
+            if (!$analysis['success']) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Error al generar la carta de presentación'
+                    'message' => 'Error al generar la carta de presentación',
+                    'error' => $analysis['error']
                 ], 500);
+            }
+
+            // Parsear la respuesta JSON de la IA
+            $aiResponse = json_decode($analysis['content'], true);
+
+            $coverLetter = '';
+            if (json_last_error() === JSON_ERROR_NONE && isset($aiResponse['carta'])) {
+                $coverLetter = $aiResponse['carta'];
+            } else {
+                // Si no es JSON válido o no tiene carta, usar contenido completo
+                $coverLetter = $analysis['content'];
             }
 
             // Actualizar el registro con la carta generada
@@ -205,26 +222,44 @@ class AIMatchController extends Controller
             $user = User::with('profile')->findOrFail($userId);
             $jobOffer = JobOffer::findOrFail($jobOfferId);
 
+            // Preparar datos del usuario
             $userProfile = [
+                'name' => $user->name,
                 'experience' => $user->profile->parsed_cv ?? '',
                 'skills' => $user->profile->skills ?? [],
                 'education' => $user->profile->parsed_cv ?? '',
                 'desired_position' => $user->profile->desired_position ?? '',
             ];
 
+            // Preparar datos de la oferta
             $jobOfferData = [
                 'title' => $jobOffer->title,
                 'company' => $jobOffer->company,
                 'description' => $jobOffer->description,
+                'location' => $jobOffer->location,
+                'tags' => $jobOffer->tags ?? [],
             ];
 
-            $feedback = $this->aiService->generateProfileFeedback($userProfile, $jobOfferData);
+            // Llamar al servicio de IA (que devuelve análisis completo)
+            $analysis = $this->aiService->analyzeJobMatch($userProfile, $jobOfferData);
 
-            if (!$feedback) {
+            if (!$analysis['success']) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Error al generar el feedback'
+                    'message' => 'Error al generar el feedback',
+                    'error' => $analysis['error']
                 ], 500);
+            }
+
+            // Parsear la respuesta JSON de la IA
+            $aiResponse = json_decode($analysis['content'], true);
+
+            $feedback = [];
+            if (json_last_error() === JSON_ERROR_NONE && isset($aiResponse['recomendaciones'])) {
+                $feedback = $aiResponse['recomendaciones'];
+            } else {
+                // Si no es JSON válido, usar contenido completo como feedback
+                $feedback = [$analysis['content']];
             }
 
             return response()->json([
