@@ -41,25 +41,23 @@ class JobSearchController extends Controller
         // Convertir a colección para poder usar filter
         $offers = collect($offers);
 
-        $matches = $offers->filter(function ($offer) use ($profile) {       //recorremos las ofertas y filtramos las que coinciden con el perfil del usuario
+        $matches = $offers->filter(function ($offer) use ($profile) {
             // Verificar que los campos necesarios existen
-            if (!isset($offer['position']) || !isset($offer['description'])) {
+            if (!isset($offer['position']) || !isset($offer['description']) || !isset($offer['tags'])) {
                 return false;
             }
 
-            $titleMatch = str_contains(strtolower($offer['position']), strtolower($profile->desired_position)); //compara el titulo de la oferta con el puesto deseado//
+            // 1. Verificar coincidencia razonable en el título del puesto
+            $titleMatch = $this->isReasonableTitleMatch($offer['position'], $profile->desired_position);
 
-            $skillMatch = false;
-            if ($profile->skills && is_array($profile->skills)) {
-                // Limpiar la descripción para hacer la comparación más efectiva
-                $cleanDescription = $this->cleanDescription($offer['description']);
-
-                $skillMatch = collect($profile->skills)->some(function ($skill) use ($cleanDescription) { //si alguna skill del perfil coincide con la descripcion de la oferta hará match//
-                    return str_contains(strtolower($cleanDescription), strtolower($skill));
-                });
+            if (!$titleMatch) {
+                return false; // Si no hay match en el título, descartar directamente
             }
 
-            return $titleMatch || $skillMatch; //retorna true si hay coincidencia en el titulo o en las skills(o ambas)//
+            // 2. Verificar coincidencia de al menos 2 tecnologías
+            $techMatch = $this->hasSufficientTechMatch($offer['tags'], $profile->skills);
+
+            return $titleMatch && $techMatch; // Ambas condiciones deben cumplirse
         });
 
         // Guardar las ofertas coincidentes en la base de datos
@@ -216,5 +214,88 @@ class JobSearchController extends Controller
         $description = trim($description);
 
         return $description;
+    }
+
+    /**
+     * Verifica si hay una coincidencia razonable entre el título de la oferta y el puesto deseado
+     */
+    private function isReasonableTitleMatch($offerTitle, $desiredPosition)
+    {
+        $offerTitle = strtolower(trim($offerTitle));
+        $desiredPosition = strtolower(trim($desiredPosition));
+
+        // Coincidencia exacta por substring
+        if (str_contains($offerTitle, $desiredPosition) || str_contains($desiredPosition, $offerTitle)) {
+            return true;
+        }
+
+        // Usar similar_text para calcular similitud
+        $similarity = 0;
+        similar_text($offerTitle, $desiredPosition, $similarity);
+
+        // Considerar match si la similitud es >= 70%
+        if ($similarity >= 60) {
+            return true;
+        }
+
+        // Usar levenshtein para distancia de edición (solo para strings cortos)
+        if (strlen($offerTitle) <= 50 && strlen($desiredPosition) <= 50) {
+            $distance = levenshtein($offerTitle, $desiredPosition);
+            $maxLength = max(strlen($offerTitle), strlen($desiredPosition));
+
+            // Si la distancia es menor al 30% de la longitud máxima
+            $similarity_pct = (1 - ($distance / $maxLength)) * 100;
+            if ($similarity_pct >= 70) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Verifica si hay al menos 2 tecnologías coincidentes
+     */
+    private function hasSufficientTechMatch($offerTags, $userSkills)
+    {
+        if (!is_array($offerTags) || !is_array($userSkills)) {
+            return false;
+        }
+
+        // Normalizar arrays a minúsculas
+        $offerTechs = array_map('strtolower', array_map('trim', $offerTags));
+        $userTechs = array_map('strtolower', array_map('trim', $userSkills));
+
+        // Encontrar coincidencias exactas
+        $exactMatches = array_intersect($userTechs, $offerTechs);
+
+        if (count($exactMatches) >= 2) {
+            return true;
+        }
+
+        // Si no hay suficientes coincidencias exactas, buscar coincidencias parciales
+        $partialMatches = [];
+        foreach ($userTechs as $userTech) {
+            foreach ($offerTechs as $offerTech) {
+                // Buscar si una tecnología está contenida en la otra
+                if (str_contains($userTech, $offerTech) || str_contains($offerTech, $userTech)) {
+                    $partialMatches[] = [$userTech, $offerTech];
+                    continue 2; // Pasar al siguiente userTech
+                }
+
+                // Usar similar_text para coincidencias aproximadas
+                $similarity = 0;
+                similar_text($userTech, $offerTech, $similarity);
+                if ($similarity >= 80) { // 80% de similitud para tecnologías
+                    $partialMatches[] = [$userTech, $offerTech];
+                    continue 2; // Pasar al siguiente userTech
+                }
+            }
+        }
+
+        // Combinar coincidencias exactas y parciales
+        $totalMatches = count($exactMatches) + count($partialMatches);
+
+        return $totalMatches >= 2;
     }
 }
