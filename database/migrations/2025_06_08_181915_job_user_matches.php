@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('job_offer_id')->constrained()->onDelete('cascade');
             $table->integer('match_score')->nullable();
             $table->json('tags')->nullable();
-            $table->longText('ai_feedback')->nullable();
+            $table->json('ai_feedback')->nullable();
             $table->longText('cover_letter')->nullable();
             $table->timestamps();
         });
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('user_job_matches');
+        Schema::dropIfExists('user_job_offers');
     }
 };
