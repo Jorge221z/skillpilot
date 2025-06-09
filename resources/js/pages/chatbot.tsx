@@ -2,8 +2,8 @@ import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { MessageCircle, Bot } from 'lucide-react';
-import { useEffect } from 'react';
+import { MessageCircle, Bot, Loader2 } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -13,6 +13,8 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function Chatbot() {
+    const [chatbotLoaded, setChatbotLoaded] = useState(false);
+
     useEffect(() => {
         // Crear y añadir el script del chatbot cuando el componente se monta
         const script = document.createElement('script');
@@ -27,14 +29,58 @@ export default function Chatbot() {
         script.setAttribute('data-starting-message', 'Hola! En que te puedo ayudar?');
         script.setAttribute('data-logo', '/static/chatbot/icons/default-agent.svg');
 
+        script.onload = () => {
+            setChatbotLoaded(true);
+        };
+
+        script.onerror = () => {
+            console.error('Error al cargar el chatbot');
+            setChatbotLoaded(false);
+        };
+
         document.head.appendChild(script);
 
-        // Cleanup: remover el script cuando el componente se desmonte
+        // Timeout de respaldo en caso de que el script no dispare onload
+        const loadTimeout = setTimeout(() => {
+            if (!chatbotLoaded) {
+                setChatbotLoaded(true);
+            }
+        }, 5000);
+
+        // Cleanup: remover el script y todos los elementos del chatbot cuando el componente se desmonte
         return () => {
+            clearTimeout(loadTimeout);
+            setChatbotLoaded(false);
+
+            // Remover el script
             const existingScript = document.querySelector('script[src="https://oli4d7urqtimurg4vxbm23tk.agents.do-ai.run/static/chatbot/widget.js"]');
             if (existingScript) {
                 existingScript.remove();
             }
+
+            // Remover cualquier elemento del chatbot que pueda haber quedado en el DOM
+            const chatbotElements = document.querySelectorAll('[id*="chatbot"], [class*="chatbot"], [data-agent-id], iframe[src*="agents.do-ai.run"]');
+            chatbotElements.forEach(element => {
+                element.remove();
+            });
+
+            // También intentar remover elementos comunes de chatbots de terceros
+            const commonChatbotSelectors = [
+                'div[style*="position: fixed"][style*="bottom"]',
+                'div[style*="z-index: 999"]',
+                '.widget-container',
+                '#widget-container'
+            ];
+
+            commonChatbotSelectors.forEach(selector => {
+                const elements = document.querySelectorAll(selector);
+                elements.forEach(el => {
+                    // Solo remover si parece ser del chatbot (contiene referencias a agents.do-ai.run)
+                    if (el.innerHTML.includes('agents.do-ai.run') || el.innerHTML.includes('chatbot')) {
+                        el.remove();
+                    }
+                });
+            });
         };
     }, []);
 
@@ -90,11 +136,20 @@ export default function Chatbot() {
 
                             {/* Instrucciones de uso */}
                             <div className="text-center space-y-4">
-                                <h3 className="text-lg font-semibold text-muted-foreground">
-                                    Para comenzar, busca el botón del chatbot en la esquina inferior derecha
-                                </h3>
+                                <div className="flex items-center justify-center gap-2">
+                                    {!chatbotLoaded && <Loader2 className="h-4 w-4 animate-spin" />}
+                                    <h3 className="text-lg font-semibold text-muted-foreground">
+                                        {chatbotLoaded
+                                            ? "El chatbot está listo. Busca el botón en la esquina inferior derecha"
+                                            : "Cargando chatbot..."
+                                        }
+                                    </h3>
+                                </div>
                                 <p className="text-sm text-muted-foreground">
-                                    El chatbot aparecerá como un icono flotante. Haz clic en él para empezar a conversar.
+                                    {chatbotLoaded
+                                        ? "El chatbot aparecerá como un icono flotante. Haz clic en él para empezar a conversar."
+                                        : "Por favor espera mientras se carga el asistente inteligente."
+                                    }
                                 </p>
                             </div>
 
