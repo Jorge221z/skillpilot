@@ -43,8 +43,11 @@ class JobSearchController extends Controller
 
             $skillMatch = false;
             if ($profile->skills && is_array($profile->skills)) {
-                $skillMatch = collect($profile->skills)->some(function ($skill) use ($offer) { //si alguna skill del perfil coincide con la descripcion de la oferta hará match//
-                    return str_contains(strtolower($offer['description']), strtolower($skill));
+                // Limpiar la descripción para hacer la comparación más efectiva
+                $cleanDescription = $this->cleanDescription($offer['description']);
+
+                $skillMatch = collect($profile->skills)->some(function ($skill) use ($cleanDescription) { //si alguna skill del perfil coincide con la descripcion de la oferta hará match//
+                    return str_contains(strtolower($cleanDescription), strtolower($skill));
                 });
             }
 
@@ -67,7 +70,7 @@ class JobSearchController extends Controller
                 [
                     'title' => $offer['position'],
                     'company' => $offer['company'],
-                    'description' => $offer['description'] ?? '',
+                    'description' => $this->cleanDescription($offer['description'] ?? ''),
                     'location' => $offer['location'] ?? null,
                     'tags' => isset($offer['tags']) ? $offer['tags'] : null,
                     'url' => $offer['url'],
@@ -125,5 +128,29 @@ class JobSearchController extends Controller
             'matches' => $matches,
             'total' => $matches->count()
         ]);
+    }
+
+    /**
+     * Limpia el contenido HTML de una descripción
+     */
+    private function cleanDescription($description)
+    {
+        if (empty($description)) {
+            return '';
+        }
+
+        // Convertir entidades HTML
+        $description = html_entity_decode($description, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+
+        // Eliminar todas las etiquetas HTML
+        $description = strip_tags($description);
+
+        // Limpiar espacios en blanco excesivos
+        $description = preg_replace('/\s+/', ' ', $description);
+
+        // Eliminar espacios al inicio y final
+        $description = trim($description);
+
+        return $description;
     }
 }
