@@ -11,18 +11,23 @@ import { useInitials } from '@/hooks/use-initials';
 import { cn } from '@/lib/utils';
 import { type BreadcrumbItem, type NavItem, type SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { BookOpen, Folder, LayoutGrid, Menu, Search, User } from 'lucide-react';
+import { BookOpen, Folder, LayoutGrid, Menu, Search, User, MessageCircle } from 'lucide-react';
 import AppLogo from './app-logo';
 import AppLogoIcon from './app-logo-icon';
 
 const mainNavItems: NavItem[] = [
     {
-        title: 'Dashboard',
+        title: 'Ofertas',
         href: '/dashboard',
         icon: LayoutGrid,
     },
     {
-        title: 'Profile',
+        title: 'Chatbot',
+        href: '/chatbot',
+        icon: MessageCircle,
+    },
+    {
+        title: 'Perfil',
         href: '/profile',
         icon: User,
     },

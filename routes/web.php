@@ -67,6 +67,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Rutas para AI Analysis
     Route::post('ai/analyze/{jobMatchId}', [\App\Http\Controllers\AIAnalysisController::class, 'analyzeJobOffer'])->name('ai.analyze');
     Route::get('ai/analysis/{jobMatchId}', [\App\Http\Controllers\AIAnalysisController::class, 'getAnalysis'])->name('ai.get-analysis');
+    
+    // Ruta para Chatbot
+    Route::get('chatbot', function () {
+        return Inertia::render('chatbot');
+    })->name('chatbot');
 });
 
 require __DIR__.'/settings.php';
