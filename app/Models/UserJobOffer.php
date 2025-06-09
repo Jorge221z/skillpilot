@@ -17,6 +17,7 @@ class UserJobOffer extends Model
 
     protected $casts = [
         'tags' => 'array',
+        'ai_feedback' => 'array',
     ];
 
     public function user()

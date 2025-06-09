@@ -62,7 +62,7 @@ class JobSearchController extends Controller
             return $titleMatch || $skillMatch; //retorna true si hay coincidencia en el titulo o en las skills(o ambas)//
         });
 
-        // Guardar las ofertas coincidentes en la base de datos y analizarlas con IA
+        // Guardar las ofertas coincidentes en la base de datos
         $processedCount = 0;
         foreach ($matches as $offer) {
             // Verificar que los campos obligatorios existen
@@ -89,7 +89,7 @@ class JobSearchController extends Controller
             );
 
             // Crear la relación usuario-oferta en user_job_offers
-            $userJobOffer = $user->jobMatches()->updateOrCreate(
+            $user->jobMatches()->updateOrCreate(
                 ['job_offer_id' => $jobOffer->id],
                 [
                     'user_id' => $user->id,
@@ -97,13 +97,11 @@ class JobSearchController extends Controller
                 ]
             );
 
-            // Analizar con IA y guardar feedback y carta
-            $this->processWithAI($user, $jobOffer, $userJobOffer);
             $processedCount++;
         }
 
         // Redirigir de vuelta con mensaje de éxito
-        return back()->with('success', "Se encontraron {$processedCount} ofertas coincidentes y se analizaron con IA.");
+        return back()->with('success', "Se encontraron {$processedCount} ofertas coincidentes. Ahora puedes analizarlas con IA desde tu dashboard.");
     }
 
     /**

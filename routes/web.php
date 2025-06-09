@@ -63,6 +63,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Rutas para Job Search
     Route::post('jobs/fetch-and-match', [\App\Http\Controllers\JobSearchController::class, 'fetchAndMatch'])->name('jobs.fetch-and-match');
     Route::get('jobs/matches', [\App\Http\Controllers\JobSearchController::class, 'getMatches'])->name('jobs.matches');
+
+    // Rutas para AI Analysis
+    Route::post('ai/analyze/{jobMatchId}', [\App\Http\Controllers\AIAnalysisController::class, 'analyzeJobOffer'])->name('ai.analyze');
+    Route::get('ai/analysis/{jobMatchId}', [\App\Http\Controllers\AIAnalysisController::class, 'getAnalysis'])->name('ai.get-analysis');
 });
 
 require __DIR__.'/settings.php';
