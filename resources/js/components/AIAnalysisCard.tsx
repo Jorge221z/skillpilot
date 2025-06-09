@@ -19,7 +19,7 @@ interface JobMatch {
         title: string;
         company: string;
         description: string;
-        location: string;
+        location: string | null;
         tags: string[] | null;
         url: string;
         source: string;
