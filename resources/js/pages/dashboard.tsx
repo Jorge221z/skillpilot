@@ -1,7 +1,7 @@
 import { PlaceholderPattern } from '@/components/ui/placeholder-pattern';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { Head, useForm } from '@inertiajs/react';
+import { Head, useForm, router } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ExternalLink, Search, Building2, MapPin, Calendar, Brain } from 'lucide-react';
 import { toast } from 'sonner';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import AIAnalysisCard from '@/components/AIAnalysisCard';
 
 interface JobOffer {
@@ -54,11 +54,17 @@ export default function Dashboard({ jobMatches, totalMatches }: DashboardProps) 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [jobMatchesState, setJobMatchesState] = useState<JobMatch[]>(jobMatches);
 
+    // Sincronizar el estado local cuando cambien las props de Inertia
+    useEffect(() => {
+        setJobMatchesState(jobMatches);
+    }, [jobMatches]);
+
     const handleFetchJobs = () => {
         post(route('jobs.fetch-and-match'), {
             onSuccess: () => {
                 toast.success('¡Búsqueda de ofertas completada!');
-                // Inertia.js actualizará automáticamente los datos sin recargar la página
+                // Recargar la página para obtener los datos actualizados
+                router.reload({ only: ['jobMatches', 'totalMatches'] });
             },
             onError: (errors) => {
                 toast.error(errors.message || 'Error al buscar ofertas');
