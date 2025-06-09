@@ -5,8 +5,10 @@ import { Head, useForm } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { ExternalLink, Search, Building2, MapPin, Calendar } from 'lucide-react';
 import { toast } from 'sonner';
+import { useState } from 'react';
 
 interface JobOffer {
     id: number;
@@ -45,6 +47,9 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 export default function Dashboard({ jobMatches, totalMatches }: DashboardProps) {
     const { post, processing } = useForm();
+    const [selectedJobTags, setSelectedJobTags] = useState<string[]>([]);
+    const [selectedJobTitle, setSelectedJobTitle] = useState<string>('');
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const handleFetchJobs = () => {
         post(route('jobs.fetch-and-match'), {
@@ -61,6 +66,12 @@ export default function Dashboard({ jobMatches, totalMatches }: DashboardProps) 
     const truncateText = (text: string, maxLength: number) => {
         if (text.length <= maxLength) return text;
         return text.substring(0, maxLength) + '...';
+    };
+
+    const openTagsModal = (tags: string[], jobTitle: string) => {
+        setSelectedJobTags(tags);
+        setSelectedJobTitle(jobTitle);
+        setIsModalOpen(true);
     };
 
     return (
@@ -203,7 +214,11 @@ export default function Dashboard({ jobMatches, totalMatches }: DashboardProps) 
                                                     </Badge>
                                                 ))}
                                                 {match.job_offer.tags.length > 6 && (
-                                                    <Badge variant="outline" className="text-xs">
+                                                    <Badge
+                                                        variant="outline"
+                                                        className="text-xs cursor-pointer hover:bg-primary hover:text-primary-foreground transition-colors"
+                                                        onClick={() => openTagsModal(match.job_offer.tags!, match.job_offer.title)}
+                                                    >
                                                         +{match.job_offer.tags.length - 6} más
                                                     </Badge>
                                                 )}
@@ -216,6 +231,31 @@ export default function Dashboard({ jobMatches, totalMatches }: DashboardProps) 
                     </CardContent>
                 </Card>
             </div>
+
+            {/* Modal para mostrar todos los tags */}
+            <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+                <DialogContent className="max-w-2xl">
+                    <DialogHeader>
+                        <DialogTitle className="text-lg">
+                            Habilidadess - {selectedJobTitle}
+                        </DialogTitle>
+                    </DialogHeader>
+                    <div className="grid gap-4 py-4">
+                        <div className="flex flex-wrap gap-2">
+                            {selectedJobTags.map((tag, index) => (
+                                <Badge key={index} variant="outline" className="text-sm py-1 px-3">
+                                    {tag}
+                                </Badge>
+                            ))}
+                        </div>
+                        {selectedJobTags.length === 0 && (
+                            <p className="text-muted-foreground text-sm">
+                                No hay habilidades especificadas para esta oferta.
+                            </p>
+                        )}
+                    </div>
+                </DialogContent>
+            </Dialog>
         </AppLayout>
     );
 }
