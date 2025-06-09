@@ -11,7 +11,41 @@ Route::get('/', function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {
-        return Inertia::render('dashboard');
+        $user = Auth::user();
+
+        // Obtener las ofertas del usuario con la información de la oferta de trabajo
+        $matches = $user->jobMatches()
+            ->with('jobOffer')
+            ->latest()
+            ->take(10) // Limitar a las 10 más recientes para el dashboard
+            ->get()
+            ->map(function ($match) {
+                return [
+                    'id' => $match->id,
+                    'job_offer_id' => $match->job_offer_id,
+                    'match_score' => $match->match_score,
+                    'tags' => $match->tags,
+                    'ai_feedback' => $match->ai_feedback,
+                    'cover_letter' => $match->cover_letter,
+                    'created_at' => $match->created_at,
+                    'job_offer' => [
+                        'id' => $match->jobOffer->id,
+                        'title' => $match->jobOffer->title,
+                        'company' => $match->jobOffer->company,
+                        'description' => $match->jobOffer->description,
+                        'location' => $match->jobOffer->location,
+                        'tags' => $match->jobOffer->tags,
+                        'url' => $match->jobOffer->url,
+                        'source' => $match->jobOffer->source,
+                        'created_at' => $match->jobOffer->created_at,
+                    ]
+                ];
+            });
+
+        return Inertia::render('dashboard', [
+            'jobMatches' => $matches,
+            'totalMatches' => $user->jobMatches()->count()
+        ]);
     })->name('dashboard');
 
     Route::get('profile', function () {
@@ -25,6 +59,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('profile/process-cv', [UserPreferencesController::class, 'processCV'])->name('profile.process-cv');
     Route::get('profile/data', [UserPreferencesController::class, 'getUserProfile'])->name('profile.data');
     Route::put('profile/update', [UserPreferencesController::class, 'updateProfile'])->name('profile.update');
+
+    // Rutas para Job Search
+    Route::post('jobs/fetch-and-match', [\App\Http\Controllers\JobSearchController::class, 'fetchAndMatch'])->name('jobs.fetch-and-match');
+    Route::get('jobs/matches', [\App\Http\Controllers\JobSearchController::class, 'getMatches'])->name('jobs.matches');
 });
 
 require __DIR__.'/settings.php';
