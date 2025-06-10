@@ -28,6 +28,15 @@ return [
             'timeout' => env('LINKEDIN_TIMEOUT', 30),
         ],
 
+        'remotive' => [
+            'enabled' => env('REMOTIVE_ENABLED', true),
+            'api_url' => env('REMOTIVE_API_URL', 'https://remotive.com/api/remote-jobs'),
+            'category' => env('REMOTIVE_CATEGORY', 'software-dev'), // software-dev, design, marketing, customer-support
+            'rate_limit' => env('REMOTIVE_RATE_LIMIT', 60), // requests per minute
+            'timeout' => env('REMOTIVE_TIMEOUT', 30), // seconds
+            'user_agent' => env('REMOTIVE_USER_AGENT', 'SkillPilot JobBot/1.0'),
+        ],
+
         'indeed' => [
             'enabled' => env('INDEED_ENABLED', false),
             'api_key' => env('INDEED_API_KEY'),

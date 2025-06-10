@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Services\JobSources\JobSourceInterface;
 use App\Services\JobSources\RemoteOkService;
+use App\Services\JobSources\RemotiveService;
 use App\Models\JobOffer;
 use Illuminate\Support\Facades\Log;
 
@@ -18,6 +19,7 @@ class JobSourceManager
     {
         // Registrar las fuentes disponibles
         $this->registerSource(new RemoteOkService());
+        $this->registerSource(new RemotiveService());
 
         // Aquí se pueden añadir más fuentes en el futuro:
         // $this->registerSource(new LinkedInService());
