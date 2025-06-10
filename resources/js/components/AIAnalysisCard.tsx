@@ -88,133 +88,110 @@ export const AIAnalysisCard: React.FC<AIAnalysisCardProps> = ({ jobMatch, onAnal
     }, [jobMatch.id, hasAnalysis]);
 
     return (
-        <Card className="w-full">
-            <CardHeader>
-                <div className="flex items-center justify-between">
-                    <div>
-                        <CardTitle className="flex items-center gap-2">
-                            <Brain className="h-5 w-5 text-blue-600" />
-                            Análisis con IA
-                        </CardTitle>
-                        <CardDescription>
-                            {jobMatch.job_offer.title} en {jobMatch.job_offer.company}
-                        </CardDescription>
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <Badge
-                            className={AIAnalysisService.getMatchScoreColor(jobMatch.match_score)}
-                        >
-                            {AIAnalysisService.getFormattedMatchScore(jobMatch.match_score)}
-                        </Badge>
-                        {hasAnalysis && (
-                            <Badge variant="outline" className="text-green-600 border-green-600">
-                                <CheckCircle className="h-3 w-3 mr-1" />
-                                Analizado
-                            </Badge>
-                        )}
-                    </div>
+        <div className="w-full">
+            {error && (
+                <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md flex items-center gap-2 text-red-700">
+                    <AlertCircle className="h-4 w-4" />
+                    <span className="text-sm">{error}</span>
                 </div>
-            </CardHeader>
-            <CardContent>
-                {error && (
-                    <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md flex items-center gap-2 text-red-700">
-                        <AlertCircle className="h-4 w-4" />
-                        <span className="text-sm">{error}</span>
-                    </div>
-                )}
+            )}
 
-                {!hasAnalysis && !analysisData && (
-                    <div className="text-center py-8">
-                        <Brain className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                        <p className="text-gray-600 mb-4">
-                            Esta oferta aún no ha sido analizada con IA.
-                        </p>
-                        <Button
-                            onClick={handleAnalyze}
-                            disabled={isAnalyzing}
-                            className="bg-blue-600 hover:bg-blue-700"
-                        >
-                            {isAnalyzing ? (
-                                <>
-                                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                                    Analizando...
-                                </>
-                            ) : (
-                                <>
-                                    <Brain className="h-4 w-4 mr-2" />
-                                    Analizar con IA
-                                </>
-                            )}
-                        </Button>
-                    </div>
-                )}
+            {!hasAnalysis && !analysisData && (
+                <div className="p-2">
+                    <Button
+                        onClick={handleAnalyze}
+                        disabled={isAnalyzing}
+                        variant="outline"
+                        size="sm"
+                        className="border-purple-200 text-purple-700 hover:bg-purple-50 dark:border-purple-600 dark:text-purple-300 dark:hover:bg-purple-900/30"
+                    >
+                        {isAnalyzing ? (
+                            <>
+                                <Loader2 className="h-3 w-3 mr-2 animate-spin" />
+                                Analizando...
+                            </>
+                        ) : (
+                            <>
+                                <Brain className="h-3 w-3 mr-2" />
+                                Analizar
+                            </>
+                        )}
+                    </Button>
+                </div>
+            )}
 
-                {(hasAnalysis || analysisData) && (
+            {(hasAnalysis || analysisData) && (
+                <div className="space-y-4 p-2">
+                    <div className="flex items-center gap-2">
+                        <CheckCircle className="h-4 w-4 text-green-600" />
+                        <span className="text-sm font-medium text-green-700 dark:text-green-400">Análisis completado</span>
+                    </div>
+                    
                     <Tabs defaultValue="recommendations" className="w-full">
-                        <TabsList className="grid w-full grid-cols-2">
-                            <TabsTrigger value="recommendations">Recomendaciones</TabsTrigger>
-                            <TabsTrigger value="cover-letter">Carta de Presentación</TabsTrigger>
+                        <TabsList className="grid w-full grid-cols-2 h-9 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600">
+                            <TabsTrigger 
+                                value="recommendations" 
+                                className="text-sm data-[state=active]:bg-blue-100 data-[state=active]:text-blue-700 data-[state=active]:border-blue-400 dark:data-[state=active]:bg-blue-900/30 dark:data-[state=active]:text-blue-300"
+                            >
+                                Recomendaciones
+                            </TabsTrigger>
+                            <TabsTrigger 
+                                value="cover-letter" 
+                                className="text-sm data-[state=active]:bg-gray-100 data-[state=active]:text-gray-700 data-[state=active]:border-gray-400 dark:data-[state=active]:bg-gray-700/50 dark:data-[state=active]:text-gray-300"
+                            >
+                                Carta
+                            </TabsTrigger>
                         </TabsList>
 
-                        <TabsContent value="recommendations" className="mt-4">
+                        <TabsContent value="recommendations" className="mt-4 px-1">
                             <div className="space-y-3">
-                                <h4 className="font-semibold text-gray-900 mb-3">
-                                    Recomendaciones para mejorar tu candidatura:
-                                </h4>
-                                <div className="space-y-2">
-                                    {(() => {
-                                        // Obtener las recomendaciones de forma segura
-                                        const recommendations = analysisData?.recomendaciones ||
-                                                              (Array.isArray(jobMatch.ai_feedback) ? jobMatch.ai_feedback : []);
+                                {(() => {
+                                    const recommendations = analysisData?.recomendaciones ||
+                                                          (Array.isArray(jobMatch.ai_feedback) ? jobMatch.ai_feedback : []);
 
-                                        if (!Array.isArray(recommendations) || recommendations.length === 0) {
-                                            return (
-                                                <div className="p-3 bg-gray-50 rounded-lg">
-                                                    <p className="text-gray-600 text-sm">No hay recomendaciones disponibles.</p>
-                                                </div>
-                                            );
-                                        }
-
-                                        return recommendations.map((rec: string, index: number) => (
-                                            <div key={index} className="flex items-start gap-3 p-3 bg-blue-50 rounded-lg">
-                                                <div className="flex-shrink-0 w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-medium">
-                                                    {index + 1}
-                                                </div>
-                                                <p className="text-gray-800 text-sm">{rec}</p>
+                                    if (!Array.isArray(recommendations) || recommendations.length === 0) {
+                                        return (
+                                            <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg text-center">
+                                                <p className="text-gray-600 dark:text-gray-400 text-sm">No hay recomendaciones disponibles.</p>
                                             </div>
-                                        ));
-                                    })()}
-                                </div>
+                                        );
+                                    }
+
+                                    return recommendations.map((rec: string, index: number) => (
+                                        <div key={index} className="flex items-start gap-3 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border-l-4 border-blue-400">
+                                            <div className="flex-shrink-0 w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-medium">
+                                                {index + 1}
+                                            </div>
+                                            <p className="text-gray-800 dark:text-gray-200 text-sm leading-relaxed">{rec}</p>
+                                        </div>
+                                    ));
+                                })()}
                             </div>
                         </TabsContent>
 
-                        <TabsContent value="cover-letter" className="mt-4">
+                        <TabsContent value="cover-letter" className="mt-4 px-1">
                             <div className="space-y-3">
-                                <div className="flex items-center gap-2 mb-3">
-                                    <FileText className="h-4 w-4 text-gray-600" />
-                                    <h4 className="font-semibold text-gray-900">
-                                        Carta de Presentación Personalizada
-                                    </h4>
-                                </div>
-                                <div className="bg-gray-50 p-4 rounded-lg">
-                                    <p className="text-gray-800 whitespace-pre-line leading-relaxed">
+                                <div className="bg-gray-50 dark:bg-gray-800 p-5 rounded-lg border border-gray-200 dark:border-gray-600">
+                                    <p className="text-gray-800 dark:text-gray-200 text-sm leading-relaxed whitespace-pre-line">
                                         {analysisData?.carta || jobMatch.cover_letter || 'Carta no disponible'}
                                     </p>
                                 </div>
-                                <div className="flex gap-2 mt-4">
+                                <div className="flex gap-3 px-1">
                                     <Button
                                         variant="outline"
                                         size="sm"
+                                        className="flex-1"
                                         onClick={() => {
                                             const text = analysisData?.carta || jobMatch.cover_letter || '';
                                             navigator.clipboard.writeText(text);
                                         }}
                                     >
-                                        Copiar Carta
+                                        📋 Copiar
                                     </Button>
                                     <Button
                                         variant="outline"
                                         size="sm"
+                                        className="flex-1"
                                         onClick={() => {
                                             const element = document.createElement('a');
                                             const file = new Blob([analysisData?.carta || jobMatch.cover_letter || ''], {type: 'text/plain'});
@@ -225,24 +202,15 @@ export const AIAnalysisCard: React.FC<AIAnalysisCardProps> = ({ jobMatch, onAnal
                                             document.body.removeChild(element);
                                         }}
                                     >
-                                        Descargar
+                                        📄 Descargar
                                     </Button>
                                 </div>
                             </div>
                         </TabsContent>
                     </Tabs>
-                )}
-
-                {!hasAnalysis && !analysisData && !isAnalyzing && (
-                    <div className="mt-4 p-3 bg-gray-50 rounded-lg">
-                        <p className="text-sm text-gray-600">
-                            💡 <strong>Tip:</strong> El análisis con IA te proporcionará recomendaciones específicas
-                            para mejorar tu candidatura y una carta de presentación personalizada para esta oferta.
-                        </p>
-                    </div>
-                )}
-            </CardContent>
-        </Card>
+                </div>
+            )}
+        </div>
     );
 };
 
