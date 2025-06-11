@@ -260,7 +260,7 @@ export default function Dashboard({ jobMatches, totalMatches }: DashboardProps) 
           {/* Header with Stats Cards */}
           <div className="flex items-center justify-between">
             <div className="border-l-4 border-l-indigo-500 pl-6 py-4">
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">SkillPilot Dashboard</h1>
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Ofertas</h1>
               <p className="text-gray-600 dark:text-gray-400 mt-1">
                 Encuentra oportunidades que coincidan con tu perfil profesional
               </p>
