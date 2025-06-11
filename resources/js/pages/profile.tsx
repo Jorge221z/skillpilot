@@ -470,7 +470,7 @@ export default function Profile() {
                               variant="outline"
                               size="icon"
                               onClick={() => removeTechnology(index)}
-                              className="border-red-300 text-red-600 hover:bg-red-50 dark:border-red-700 dark:text-red-400 dark:hover:bg-red-900/20"
+                              className="border-red-300 text-red-600 hover:bg-red-50 dark:border-red-700 dark:text-red-400 dark:hover:bg-red-900/20 dark:bg-neutral-900"
                             >
                               <Trash className="h-4 w-4" />
                             </Button>
