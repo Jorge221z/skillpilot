@@ -126,18 +126,18 @@ export const AIAnalysisCard: React.FC<AIAnalysisCardProps> = ({ jobMatch, onAnal
                         <CheckCircle className="h-4 w-4 text-green-600" />
                         <span className="text-sm font-medium text-green-700 dark:text-green-400">Análisis completado</span>
                     </div>
-                    
+
                     <Tabs defaultValue="recommendations" className="w-full">
-                        <TabsList className="grid w-full grid-cols-2 h-9 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600">
-                            <TabsTrigger 
-                                value="recommendations" 
-                                className="text-sm data-[state=active]:bg-blue-100 data-[state=active]:text-blue-700 data-[state=active]:border-blue-400 dark:data-[state=active]:bg-blue-900/30 dark:data-[state=active]:text-blue-300"
+                        <TabsList className="grid w-full grid-cols-2 h-9 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg p-1">
+                            <TabsTrigger
+                                value="recommendations"
+                                className="text-sm rounded-md data-[state=active]:bg-white data-[state=active]:text-blue-700 data-[state=active]:shadow-sm dark:data-[state=active]:bg-gray-800 dark:data-[state=active]:text-blue-300"
                             >
                                 Recomendaciones
                             </TabsTrigger>
-                            <TabsTrigger 
-                                value="cover-letter" 
-                                className="text-sm data-[state=active]:bg-gray-100 data-[state=active]:text-gray-700 data-[state=active]:border-gray-400 dark:data-[state=active]:bg-gray-700/50 dark:data-[state=active]:text-gray-300"
+                            <TabsTrigger
+                                value="cover-letter"
+                                className="text-sm rounded-md data-[state=active]:bg-white data-[state=active]:text-gray-700 data-[state=active]:shadow-sm dark:data-[state=active]:bg-gray-800 dark:data-[state=active]:text-gray-300"
                             >
                                 Carta
                             </TabsTrigger>
