@@ -143,63 +143,152 @@ export default function Dashboard({ jobMatches, totalMatches }: DashboardProps) 
     return date.toLocaleDateString("es-ES")
   }
 
+  // Count offers with recent activity (last 7 days)
+  const getRecentOffersCount = () => {
+    const sevenDaysAgo = new Date()
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7)
+    return jobMatchesState.filter(match =>
+      new Date(match.job_offer.created_at) >= sevenDaysAgo
+    ).length
+  }
+
+  // Pagination component
+  const PaginationControls = ({ compact = false }: { compact?: boolean }) => {
+    if (jobMatches.last_page <= 1) return null
+
+    if (compact) {
+      return (
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            disabled={!jobMatches.prev_page_url}
+            asChild={!!jobMatches.prev_page_url}
+          >
+            {jobMatches.prev_page_url ? (
+              <Link href={jobMatches.prev_page_url}>
+                <ChevronLeft className="h-4 w-4" />
+              </Link>
+            ) : (
+              <ChevronLeft className="h-4 w-4" />
+            )}
+          </Button>
+
+          <span className="px-2 py-1 bg-indigo-100 dark:bg-indigo-900/30 rounded text-xs font-medium text-indigo-700 dark:text-indigo-300">
+            {jobMatches.current_page}/{jobMatches.last_page}
+          </span>
+
+          <Button
+            variant="outline"
+            size="sm"
+            disabled={!jobMatches.next_page_url}
+            asChild={!!jobMatches.next_page_url}
+          >
+            {jobMatches.next_page_url ? (
+              <Link href={jobMatches.next_page_url}>
+                <ChevronRight className="h-4 w-4" />
+              </Link>
+            ) : (
+              <ChevronRight className="h-4 w-4" />
+            )}
+          </Button>
+        </div>
+      )
+    }
+
+    return (
+      <Card className="bg-white dark:bg-gray-800/50">
+        <CardContent className="p-4">
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-gray-600 dark:text-gray-400">
+              Mostrando {jobMatches.from}-{jobMatches.to} de {jobMatches.total} ofertas
+            </span>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={!jobMatches.prev_page_url}
+                asChild={!!jobMatches.prev_page_url}
+              >
+                {jobMatches.prev_page_url ? (
+                  <Link href={jobMatches.prev_page_url} className="flex items-center gap-1">
+                    <ChevronLeft className="h-4 w-4" />
+                    Anterior
+                  </Link>
+                ) : (
+                  <span className="flex items-center gap-1">
+                    <ChevronLeft className="h-4 w-4" />
+                    Anterior
+                  </span>
+                )}
+              </Button>
+
+              <span className="px-3 py-1 bg-indigo-100 dark:bg-indigo-900/30 rounded text-sm font-medium text-indigo-700 dark:text-indigo-300">
+                {jobMatches.current_page} / {jobMatches.last_page}
+              </span>
+
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={!jobMatches.next_page_url}
+                asChild={!!jobMatches.next_page_url}
+              >
+                {jobMatches.next_page_url ? (
+                  <Link href={jobMatches.next_page_url} className="flex items-center gap-1">
+                    Siguiente
+                    <ChevronRight className="h-4 w-4" />
+                  </Link>
+                ) : (
+                  <span className="flex items-center gap-1">
+                    Siguiente
+                    <ChevronRight className="h-4 w-4" />
+                  </span>
+                )}
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    )
+  }
+
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Dashboard" />
       <div className="min-h-screen bg-white dark:bg-neutral-950">
         <div className="container mx-auto px-8 md:px-12 lg:px-16 xl:px-20 py-8 space-y-8">
-          {/* Header */}
-          <div className="border-l-4 border-l-indigo-500 pl-6 py-4">
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">SkillPilot Dashboard</h1>
-            <p className="text-gray-600 dark:text-gray-400 mt-1">
-              Encuentra oportunidades que coincidan con tu perfil profesional
-            </p>
-          </div>
+          {/* Header with Stats Cards */}
+          <div className="flex items-center justify-between">
+            <div className="border-l-4 border-l-indigo-500 pl-6 py-4">
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">SkillPilot Dashboard</h1>
+              <p className="text-gray-600 dark:text-gray-400 mt-1">
+                Encuentra oportunidades que coincidan con tu perfil profesional
+              </p>
+            </div>
 
-          {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Total Matches */}
-            <Card className="border-l-4 border-l-emerald-500 shadow-sm hover:shadow-md transition-shadow bg-white dark:bg-gray-800/50">
-              <CardHeader className="pb-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 bg-emerald-500 rounded-lg">
-                      <Trophy className="h-5 w-5 text-white" />
-                    </div>
-                    <div>
-                      <CardTitle className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">
-                        {totalMatches}
-                      </CardTitle>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">Ofertas encontradas</p>
+            {/* Stats Cards */}
+            <div className="flex gap-8">
+              {/* Total Matches */}
+              <Card className="w-96 border-l-4 border-l-emerald-500 shadow-sm hover:shadow-md transition-shadow bg-white dark:bg-gray-800/50">
+                <CardHeader className="pb-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-emerald-500 rounded-lg">
+                        <Trophy className="h-5 w-5 text-white" />
+                      </div>
+                      <div>
+                        <CardTitle className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">
+                          {totalMatches}
+                        </CardTitle>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">Ofertas encontradas</p>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </CardHeader>
-            </Card>
+                </CardHeader>
+              </Card>
 
-            {/* Current Page */}
-            <Card className="border-l-4 border-l-blue-500 shadow-sm hover:shadow-md transition-shadow bg-white dark:bg-gray-800/50">
-              <CardHeader className="pb-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 bg-blue-500 rounded-lg">
-                      <Activity className="h-5 w-5 text-white" />
-                    </div>
-                    <div>
-                      <CardTitle className="text-2xl font-bold text-blue-600 dark:text-blue-400">
-                        {jobMatches.total}
-                      </CardTitle>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">
-                        Página {jobMatches.current_page} de {jobMatches.last_page}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </CardHeader>
-            </Card>
-
-            {/* Search Action */}
-            <Card className="border-l-4 border-l-violet-500 shadow-sm hover:shadow-md transition-shadow bg-white dark:bg-gray-800/50">
+              {/* Search Action */}
+              <Card className="w-96 border-l-4 border-l-violet-500 shadow-sm hover:shadow-md transition-shadow bg-white dark:bg-gray-800/50">
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-center">
                   <Button
@@ -222,6 +311,7 @@ export default function Dashboard({ jobMatches, totalMatches }: DashboardProps) 
                 </div>
               </CardHeader>
             </Card>
+            </div>
           </div>
 
           {/* Job Offers Section */}
@@ -234,14 +324,17 @@ export default function Dashboard({ jobMatches, totalMatches }: DashboardProps) 
                 </h2>
                 <p className="text-gray-600 dark:text-gray-400">Oportunidades que coinciden contigo</p>
               </div>
-              {jobMatches.total > 0 && (
-                <Badge
-                  variant="outline"
-                  className="border-indigo-200 text-indigo-700 dark:border-indigo-700 dark:text-indigo-300"
-                >
-                  {jobMatches.from}-{jobMatches.to} de {jobMatches.total}
-                </Badge>
-              )}
+              <div className="flex items-center gap-4">
+                {jobMatches.total > 0 && (
+                  <Badge
+                    variant="outline"
+                    className="border-indigo-200 text-indigo-700 dark:border-indigo-700 dark:text-indigo-300"
+                  >
+                    {jobMatches.from}-{jobMatches.to} de {jobMatches.total}
+                  </Badge>
+                )}
+                <PaginationControls compact={true} />
+              </div>
             </div>
 
             {jobMatchesState.length === 0 ? (
@@ -401,60 +494,7 @@ export default function Dashboard({ jobMatches, totalMatches }: DashboardProps) 
                 ))}
 
                 {/* Pagination */}
-                {jobMatches.last_page > 1 && (
-                  <Card className="bg-white dark:bg-gray-800/50">
-                    <CardContent className="p-4">
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm text-gray-600 dark:text-gray-400">
-                          Mostrando {jobMatches.from}-{jobMatches.to} de {jobMatches.total} ofertas
-                        </span>
-                        <div className="flex items-center gap-2">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            disabled={!jobMatches.prev_page_url}
-                            asChild={!!jobMatches.prev_page_url}
-                          >
-                            {jobMatches.prev_page_url ? (
-                              <Link href={jobMatches.prev_page_url} className="flex items-center gap-1">
-                                <ChevronLeft className="h-4 w-4" />
-                                Anterior
-                              </Link>
-                            ) : (
-                              <span className="flex items-center gap-1">
-                                <ChevronLeft className="h-4 w-4" />
-                                Anterior
-                              </span>
-                            )}
-                          </Button>
-
-                          <span className="px-3 py-1 bg-indigo-100 dark:bg-indigo-900/30 rounded text-sm font-medium text-indigo-700 dark:text-indigo-300">
-                            {jobMatches.current_page} / {jobMatches.last_page}
-                          </span>
-
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            disabled={!jobMatches.next_page_url}
-                            asChild={!!jobMatches.next_page_url}
-                          >
-                            {jobMatches.next_page_url ? (
-                              <Link href={jobMatches.next_page_url} className="flex items-center gap-1">
-                                Siguiente
-                                <ChevronRight className="h-4 w-4" />
-                              </Link>
-                            ) : (
-                              <span className="flex items-center gap-1">
-                                Siguiente
-                                <ChevronRight className="h-4 w-4" />
-                              </span>
-                            )}
-                          </Button>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                )}
+                <PaginationControls />
               </div>
             )}
           </div>
