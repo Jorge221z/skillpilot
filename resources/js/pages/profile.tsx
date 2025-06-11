@@ -240,7 +240,7 @@ export default function Profile() {
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Profile" />
-      <div className="min-h-screen bg-white dark:bg-gray-900">
+      <div className="min-h-screen bg-white dark:bg-neutral-950">
         <div className="container mx-auto px-4 py-8">
           {/* Header */}
           <div className="text-center mb-8">

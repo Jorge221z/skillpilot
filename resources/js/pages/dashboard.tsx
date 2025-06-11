@@ -146,8 +146,8 @@ export default function Dashboard({ jobMatches, totalMatches }: DashboardProps) 
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Dashboard" />
-      <div className="min-h-screen bg-white dark:bg-gray-900">
-        <div className="container mx-auto px-4 py-8 space-y-8">
+      <div className="min-h-screen bg-white dark:bg-neutral-950">
+        <div className="container mx-auto px-8 md:px-12 lg:px-16 xl:px-20 py-8 space-y-8">
           {/* Header */}
           <div className="border-l-4 border-l-indigo-500 pl-6 py-4">
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white">SkillPilot Dashboard</h1>
