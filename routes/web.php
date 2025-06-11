@@ -77,6 +77,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('chatbot', function () {
         return Inertia::render('chatbot');
     })->name('chatbot');
+
+    // Ruta para Sobre el Proyecto
+    Route::get('about', function () {
+        return Inertia::render('about');
+    })->name('about');
 });
 
 require __DIR__.'/settings.php';

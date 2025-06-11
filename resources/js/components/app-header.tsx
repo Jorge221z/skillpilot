@@ -11,7 +11,7 @@ import { useInitials } from '@/hooks/use-initials';
 import { cn } from '@/lib/utils';
 import { type BreadcrumbItem, type NavItem, type SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { BookOpen, Folder, LayoutGrid, Menu, Search, User, MessageCircle } from 'lucide-react';
+import { BookOpen, Folder, LayoutGrid, Menu, Search, User, MessageCircle, ExternalLink, Info } from 'lucide-react';
 import AppLogo from './app-logo';
 import AppLogoIcon from './app-logo-icon';
 
@@ -35,14 +35,16 @@ const mainNavItems: NavItem[] = [
 
 const rightNavItems: NavItem[] = [
     {
-        title: 'Repository',
-        href: 'https://github.com/laravel/react-starter-kit',
-        icon: Folder,
+        title: 'Sobre el Proyecto',
+        href: '/about',
+        icon: Info,
+        external: false,
     },
     {
-        title: 'Documentation',
-        href: 'https://laravel.com/docs/starter-kits#react',
-        icon: BookOpen,
+        title: 'Mi Portfolio',
+        href: 'https://jorgemunoz.pro',
+        icon: ExternalLink,
+        external: true,
     },
 ];
 
@@ -86,16 +88,27 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
 
                                         <div className="flex flex-col space-y-4">
                                             {rightNavItems.map((item) => (
-                                                <a
-                                                    key={item.title}
-                                                    href={item.href}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="flex items-center space-x-2 font-medium"
-                                                >
-                                                    {item.icon && <Icon iconNode={item.icon} className="h-5 w-5" />}
-                                                    <span>{item.title}</span>
-                                                </a>
+                                                item.external ? (
+                                                    <a
+                                                        key={item.title}
+                                                        href={item.href}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="flex items-center space-x-2 font-medium text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100 transition-colors duration-200"
+                                                    >
+                                                        {item.icon && <Icon iconNode={item.icon} className="h-5 w-5" />}
+                                                        <span>{item.title}</span>
+                                                    </a>
+                                                ) : (
+                                                    <Link
+                                                        key={item.title}
+                                                        href={item.href}
+                                                        className="flex items-center space-x-2 font-medium text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100 transition-colors duration-200"
+                                                    >
+                                                        {item.icon && <Icon iconNode={item.icon} className="h-5 w-5" />}
+                                                        <span>{item.title}</span>
+                                                    </Link>
+                                                )
                                             ))}
                                         </div>
                                     </div>
@@ -136,23 +149,30 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
 
                     <div className="ml-auto flex items-center space-x-2">
                         <div className="relative flex items-center space-x-1">
-                            <Button variant="ghost" size="icon" className="group h-9 w-9 cursor-pointer">
-                                <Search className="!size-5 opacity-80 group-hover:opacity-100" />
-                            </Button>
                             <div className="hidden lg:flex">
                                 {rightNavItems.map((item) => (
                                     <TooltipProvider key={item.title} delayDuration={0}>
                                         <Tooltip>
                                             <TooltipTrigger>
-                                                <a
-                                                    href={item.href}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="group ml-1 inline-flex h-9 w-9 items-center justify-center rounded-md bg-transparent p-0 text-sm font-medium text-accent-foreground ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50"
-                                                >
-                                                    <span className="sr-only">{item.title}</span>
-                                                    {item.icon && <Icon iconNode={item.icon} className="size-5 opacity-80 group-hover:opacity-100" />}
-                                                </a>
+                                                {item.external ? (
+                                                    <a
+                                                        href={item.href}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="group ml-1 inline-flex h-9 w-9 items-center justify-center rounded-lg bg-transparent p-0 text-sm font-medium text-neutral-600 ring-offset-background transition-all duration-200 hover:bg-neutral-100 hover:text-neutral-900 hover:scale-105 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-neutral-100 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50"
+                                                    >
+                                                        <span className="sr-only">{item.title}</span>
+                                                        {item.icon && <Icon iconNode={item.icon} className="size-5 opacity-70 group-hover:opacity-100 transition-opacity duration-200" />}
+                                                    </a>
+                                                ) : (
+                                                    <Link
+                                                        href={item.href}
+                                                        className="group ml-1 inline-flex h-9 w-9 items-center justify-center rounded-lg bg-transparent p-0 text-sm font-medium text-neutral-600 ring-offset-background transition-all duration-200 hover:bg-neutral-100 hover:text-neutral-900 hover:scale-105 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-neutral-100 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50"
+                                                    >
+                                                        <span className="sr-only">{item.title}</span>
+                                                        {item.icon && <Icon iconNode={item.icon} className="size-5 opacity-70 group-hover:opacity-100 transition-opacity duration-200" />}
+                                                    </Link>
+                                                )}
                                             </TooltipTrigger>
                                             <TooltipContent>
                                                 <p>{item.title}</p>
