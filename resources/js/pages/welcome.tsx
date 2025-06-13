@@ -62,46 +62,48 @@ export default function Welcome() {
 
                 {/* Contenido principal */}
                 <div className="flex w-full flex-1 items-center justify-center px-6 py-12">
-                    <main className="flex w-full max-w-7xl flex-col-reverse gap-12 lg:flex-row">
-                        {/* Columna izquierda - Texto */}
-                        <div className="flex-1 space-y-6">
-                            <div className="inline-block rounded-full bg-blue-500/20 px-3 py-1 text-sm text-blue-400">
+                    <div className="w-full max-w-7xl space-y-12">
+                        {/* Título principal - Ancho completo */}
+                        <div className="text-center pb-20">
+                            <div className="inline-block rounded-full bg-blue-500/20 px-3 py-1 text-sm text-blue-400 mb-6">
                                 Búsqueda de Empleo con IA
                             </div>
-                            <h1 className="text-4xl font-bold leading-tight md:text-6xl">
+                            <h1 className="text-4xl font-bold leading-tight md:text-5xl lg:text-6xl xl:text-7xl">
                                 Encuentra Tu <span className="text-orange-500">Trabajo Ideal</span> Con Asistencia de IA
                             </h1>
-                            <p className="max-w-2xl text-lg text-slate-300 md:text-xl">
-                                SkillPilot utiliza IA avanzada para conectarte con ofertas de trabajo adaptadas a tus preferencias y te
-                                ayuda a optimizar tus candidaturas para aumentar tus posibilidades de éxito.
-                            </p>
-                            <div className="flex flex-col gap-4 pt-4 sm:flex-row">
-                                <Link
-                                    href={route('register')}
-                                    className="inline-block rounded-md bg-gradient-to-r from-orange-500 to-orange-600 px-6 py-3 text-center font-medium text-white shadow-lg shadow-orange-500/30 transition-all hover:from-orange-600 hover:to-orange-700 hover:shadow-orange-600/40"
-                                >
-                                    Comenzar
-                                </Link>
-                                <a
-                                    href="#features"
-                                    className="inline-block rounded-md border border-slate-700 px-6 py-3 text-center text-slate-300 transition-colors hover:bg-slate-800"
-                                >
-                                    Saber Más
-                                </a>
-                            </div>
                         </div>
 
-                        {/* Columna derecha - Ilustración */}
-                        <div className="flex-1 relative">
-                            <div className="absolute -z-10 w-72 h-72 bg-blue-500/30 rounded-full blur-3xl top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"></div>
-                            <div className="absolute -z-10 w-72 h-72 bg-orange-500/20 rounded-full blur-3xl top-1/3 left-1/3"></div>
+                        {/* Contenido secundario - Grid */}
+                        <div className="flex flex-col-reverse gap-12 lg:flex-row">
+                            {/* Columna izquierda - Descripción y botones */}
+                            <div className="flex-1 space-y-6">
+                                <p className="max-w-2xl text-lg text-slate-300 md:text-xl">
+                                    SkillPilot utiliza IA avanzada para conectarte con ofertas de trabajo adaptadas a tus preferencias y te
+                                    ayuda a optimizar tus candidaturas para aumentar tus posibilidades de éxito.
+                                </p>
+                                <div className="flex flex-col gap-4 pt-4 sm:flex-row">
+                                    <Link
+                                        href={route('register')}
+                                        className="inline-block rounded-md bg-gradient-to-r from-orange-500 to-orange-600 px-6 py-3 text-center font-medium text-white shadow-lg shadow-orange-500/30 transition-all hover:from-orange-600 hover:to-orange-700 hover:shadow-orange-600/40"
+                                    >
+                                        Comenzar
+                                    </Link>
+                                    <a
+                                        href="#features"
+                                        className="inline-block rounded-md border border-slate-700 px-6 py-3 text-center text-slate-300 transition-colors hover:bg-slate-800"
+                                    >
+                                        Saber Más
+                                    </a>
+                                </div>
+                            </div>
 
-                            {/* Ilustración de héroe */}
-                            <div className="relative z-10">
-
+                            {/* Columna derecha - Ilustración */}
+                            <div className="flex-1 relative flex flex-col justify-center">
+                                <div className="absolute -z-10 w-72 h-72 bg-blue-500/30 rounded-full blur-3xl top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"></div>
+                                <div className="absolute -z-10 w-72 h-72 bg-orange-500/20 rounded-full blur-3xl top-1/3 left-1/3"></div>
 
                                 {/* Formas decorativas */}
-                                <div className="relative mt-8">
+                                <div className="relative">
                                     <div className="absolute inset-0 bg-gradient-to-br from-blue-600/20 to-orange-500/20 rounded-lg blur-xl"></div>
                                     <div className="relative bg-slate-800/50 border border-slate-700/50 rounded-lg p-8 backdrop-blur-sm">
                                         <div className="flex items-center gap-4 mb-4">
@@ -124,7 +126,7 @@ export default function Welcome() {
                                 </div>
                             </div>
                         </div>
-                    </main>
+                    </div>
                 </div>
 
                 {/* Características */}
