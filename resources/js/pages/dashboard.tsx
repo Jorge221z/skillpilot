@@ -365,9 +365,9 @@ export default function Dashboard({ jobMatches, totalMatches }: DashboardProps) 
             ) : (
               <div className="space-y-4">
                 {jobMatchesState.map((match) => (
-                  <Card key={match.id} className="hover:shadow-xl transition-all duration-200 bg-white dark:bg-gray-800/50 border border-gray-300 dark:border-gray-600 shadow-md overflow-hidden">
-                    <CardHeader className="pb-4 pt-0 bg-gray-100 dark:bg-gray-800/30 border-b border-gray-200 dark:border-gray-600">
-                      <div className="flex justify-between items-start pt-6">
+                  <Card key={match.id} className="hover:shadow-xl transition-all duration-200 bg-white dark:bg-gray-800/50 border border-gray-300 dark:border-gray-600 shadow-md overflow-hidden pt-0 mt-0">
+                    <CardHeader className="p-0 bg-gray-100 dark:bg-gray-800/30 border-b border-gray-200 dark:border-gray-600">
+                      <div className="flex justify-between items-start p-6 pb-4">
                         <div className="space-y-2 flex-1">
                           <div className="flex items-start gap-3">
                             <div className="p-2 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg">
