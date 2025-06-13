@@ -1,5 +1,6 @@
 import { type SharedData } from '@/types';
 import { Head, Link, usePage } from '@inertiajs/react';
+import { User } from 'lucide-react';
 
 export default function Welcome() {
     const { auth } = usePage<SharedData>().props;
@@ -64,12 +65,12 @@ export default function Welcome() {
                 <div className="flex w-full flex-1 items-center justify-center px-6 py-12">
                     <div className="w-full max-w-7xl space-y-12">
                         {/* Título principal - Ancho completo */}
-                        <div className="text-center pb-20">
+                        <div className="text-center pb-25">
                             <div className="inline-block rounded-full bg-blue-500/20 px-3 py-1 text-sm text-blue-400 mb-6">
                                 Búsqueda de Empleo con IA
                             </div>
                             <h1 className="text-4xl font-bold leading-tight md:text-5xl lg:text-6xl xl:text-7xl">
-                                Encuentra Tu <span className="text-orange-500">Trabajo Ideal</span> Con Asistencia de IA
+                                <span className="text-orange-500">Automatiza</span> tu búsqueda de empleo
                             </h1>
                         </div>
 
@@ -78,8 +79,7 @@ export default function Welcome() {
                             {/* Columna izquierda - Descripción y botones */}
                             <div className="flex-1 space-y-6">
                                 <p className="max-w-2xl text-lg text-slate-300 md:text-xl">
-                                    SkillPilot utiliza IA avanzada para conectarte con ofertas de trabajo adaptadas a tus preferencias y te
-                                    ayuda a optimizar tus candidaturas para aumentar tus posibilidades de éxito.
+                                    SkillPilot te conecta con ofertas que encajan con lo que buscas y te ayuda a mejorar tu candidatura para cada una de ellas.
                                 </p>
                                 <div className="flex flex-col gap-4 pt-4 sm:flex-row">
                                     <Link
@@ -92,7 +92,7 @@ export default function Welcome() {
                                         href="#features"
                                         className="inline-block rounded-md border border-slate-700 px-6 py-3 text-center text-slate-300 transition-colors hover:bg-slate-800"
                                     >
-                                        Saber Más
+                                        ¿Cómo funciona?
                                     </a>
                                 </div>
                             </div>
@@ -118,9 +118,9 @@ export default function Welcome() {
                                             SkillPilot analiza miles de ofertas de trabajo para encontrar las que mejor se adaptan a tu perfil profesional.
                                         </p>
                                         <div className="flex flex-wrap gap-2">
-                                            <span className="inline-block px-3 py-1 text-xs font-medium bg-blue-500/20 text-blue-400 rounded-full">Inteligencia Artificial</span>
-                                            <span className="inline-block px-3 py-1 text-xs font-medium bg-orange-500/20 text-orange-400 rounded-full">Optimización de CV</span>
-                                            <span className="inline-block px-3 py-1 text-xs font-medium bg-green-500/20 text-green-400 rounded-full">Búsqueda Personalizada</span>
+                                            <span className="inline-block px-3 py-1 text-xs font-medium bg-blue-500/20 text-blue-400 rounded-full">Optimización de CV</span>
+                                            <span className="inline-block px-3 py-1 text-xs font-medium bg-orange-500/20 text-orange-400 rounded-full">Carta de presentación personalizada</span>
+                                            <span className="inline-block px-3 py-1 text-xs font-medium bg-green-500/20 text-green-400 rounded-full">Diversas fuentes</span>
                                         </div>
                                     </div>
                                 </div>
@@ -135,34 +135,32 @@ export default function Welcome() {
                         <div className="inline-block rounded-full bg-blue-500/20 px-3 py-1 text-sm text-blue-400 mb-4">
                             Características
                         </div>
-                        <h2 className="text-3xl font-bold md:text-4xl">Cómo Te Ayuda SkillPilot</h2>
+                        <h2 className="text-3xl font-bold md:text-4xl">Cómo funciona SkillPilot</h2>
                         <p className="mt-4 max-w-2xl mx-auto text-slate-300">
-                            Nuestra plataforma combina tecnología de IA con experiencia en búsqueda de empleo para darte ventaja en tu carrera profesional.
+                            Nuestra plataforma combina inteligencia artificial con búsqueda de empleo para darte ventaja en tu carrera profesional.
                         </p>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                         <div className="bg-slate-800/50 border border-slate-700 rounded-lg p-6 hover:border-orange-500/50 transition-colors">
                             <div className="h-12 w-12 text-orange-500 mb-4">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                </svg>
+                                <User className="h-12 w-12" />
                             </div>
-                            <h3 className="text-xl font-bold text-white mb-2">Búsqueda Personalizada</h3>
+                            <h3 className="text-xl font-bold text-white mb-2">Completa tu perfil</h3>
                             <p className="text-slate-300">
-                                Nuestra IA analiza tus habilidades, experiencia y preferencias para encontrar las oportunidades laborales más relevantes.
+                                Dinós que puesto buscas, añade las habilidades o tecnologías que sabes<br></br> y sube tu currículum vitae.
                             </p>
                         </div>
 
                         <div className="bg-slate-800/50 border border-slate-700 rounded-lg p-6 hover:border-orange-500/50 transition-colors">
                             <div className="h-12 w-12 text-orange-500 mb-4">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                                 </svg>
                             </div>
-                            <h3 className="text-xl font-bold text-white mb-2">Optimización de CV</h3>
+                            <h3 className="text-xl font-bold text-white mb-2">Comienza la búsqueda</h3>
                             <p className="text-slate-300">
-                                Recibe sugerencias impulsadas por IA para mejorar tu currículum y aumentar tus posibilidades de conseguir entrevistas.
+                                Recopilaremos ofertas de empleo de diversas fuentes y te mostraremos las que hagan 'match' con tu perfil y preferencias.
                             </p>
                         </div>
 
@@ -172,9 +170,9 @@ export default function Welcome() {
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                                 </svg>
                             </div>
-                            <h3 className="text-xl font-bold text-white mb-2">Mejora de Candidaturas</h3>
+                            <h3 className="text-xl font-bold text-white mb-2">Optimiza tu candidatura</h3>
                             <p className="text-slate-300">
-                                Nuestra IA te ayuda a redactar cartas de presentación convincentes y a prepararte para entrevistas con orientación personalizada.
+                                La IA te dará consejos claves respecto a tu CV y generará una carta de presentación personalizada para cada oferta que te interese.
                             </p>
                         </div>
                     </div>
@@ -187,9 +185,9 @@ export default function Welcome() {
                         <div className="absolute -z-10 w-96 h-96 bg-orange-500/10 rounded-full blur-3xl bottom-0 left-0"></div>
 
                         <div className="max-w-3xl mx-auto text-center">
-                            <h2 className="text-3xl font-bold md:text-4xl mb-6">¿Listo para Impulsar tu Búsqueda de Empleo?</h2>
+                            <h2 className="text-3xl font-bold md:text-4xl mb-6">¿Listo encontrar el trabajo con el que sueñas?</h2>
                             <p className="text-slate-300 text-lg mb-8">
-                                Únete a miles de personas que han encontrado su trabajo ideal con la plataforma impulsada por IA de SkillPilot.
+                                Completa tu registro en segundos y comienza a recibir ofertas personalizadas que se ajusten a tu perfil profesional.
                             </p>
                             <div className="flex flex-col sm:flex-row gap-4 justify-center">
                                 <Link
