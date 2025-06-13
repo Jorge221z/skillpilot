@@ -112,6 +112,114 @@
     --sidebar-border: oklch(0.922 0 0);
     --sidebar-ring: oklch(0.87 0 0);
 }
+/* Animaciones para las partículas */
+@keyframes float-slow {
+  0%,
+  100% {
+    transform: translateY(0px) translateX(0px);
+  }
+  50% {
+    transform: translateY(-10px) translateX(5px);
+  }
+}
+
+@keyframes float-medium {
+  0%,
+  100% {
+    transform: translateY(0px) translateX(0px);
+  }
+  50% {
+    transform: translateY(-8px) translateX(-8px);
+  }
+}
+
+@keyframes float-fast {
+  0%,
+  100% {
+    transform: translateY(0px) translateX(0px);
+  }
+  50% {
+    transform: translateY(-6px) translateX(-3px);
+  }
+}
+
+@keyframes float-horizontal {
+  0%,
+  100% {
+    transform: translateX(-10px);
+    opacity: 0;
+  }
+  50% {
+    transform: translateX(10px);
+    opacity: 1;
+  }
+}
+
+@keyframes float-horizontal-reverse {
+  0%,
+  100% {
+    transform: translateX(10px);
+    opacity: 0;
+  }
+  50% {
+    transform: translateX(-10px);
+    opacity: 1;
+  }
+}
+
+@keyframes float-vertical {
+  0%,
+  100% {
+    transform: translateY(-10px);
+    opacity: 0;
+  }
+  50% {
+    transform: translateY(10px);
+    opacity: 1;
+  }
+}
+
+@keyframes float-vertical-reverse {
+  0%,
+  100% {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+  50% {
+    transform: translateY(-10px);
+    opacity: 1;
+  }
+}
+
+.animate-float-slow {
+  animation: float-slow 6s ease-in-out infinite;
+}
+
+.animate-float-medium {
+  animation: float-medium 4s ease-in-out infinite;
+}
+
+.animate-float-fast {
+  animation: float-fast 3s ease-in-out infinite;
+}
+
+.animate-float-horizontal {
+  animation: float-horizontal 7s ease-in-out infinite;
+}
+
+.animate-float-horizontal-reverse {
+  animation: float-horizontal-reverse 8s ease-in-out infinite;
+}
+
+.animate-float-vertical {
+  animation: float-vertical 5s ease-in-out infinite;
+}
+
+.animate-float-vertical-reverse {
+  animation: float-vertical-reverse 6s ease-in-out infinite;
+}
+
+
 
 .dark {
     --background: oklch(0.145 0 0);
