@@ -67,7 +67,7 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
   // Track the currently selected nav item
   const [selectedItem, setSelectedItem] = useState<string | null>(null)
   // Store refs to all nav items for measuring positions
-  const navItemRefs = useRef<Map<string, HTMLAnchorElement>>(new Map())
+  const navItemRefs = useRef<Map<string, HTMLElement | null>>(new Map())
   // Track hover state for each item
   const [hoveredItem, setHoveredItem] = useState<string | null>(null)
 
@@ -220,7 +220,7 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
                       opacity: 1,
                       ...(() => {
                         const el = navItemRefs.current.get(hoveredItem)
-                        if (!el) return {}
+                        if (!el) return { width: 0, height: 0, left: 0, top: 0 }
                         const rect = el.getBoundingClientRect()
                         const parentRect = el.parentElement?.getBoundingClientRect() || { left: 0, top: 0 }
                         return {
@@ -242,28 +242,31 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
               {mainNavItems.map((item) => {
                 const isActive = selectedItem === item.href
                 return (
-                  <Link
+                  <div
                     key={item.title}
-                    href={item.href}
                     ref={(el) => {
                       if (el) navItemRefs.current.set(item.href, el)
                     }}
-                    className={cn(
-                      "flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors z-10 relative",
-                      isActive
-                        ? "text-blue-600 dark:text-blue-400"
-                        : "text-neutral-700 dark:text-neutral-200 hover:text-neutral-900 dark:hover:text-neutral-100",
-                    )}
-                    onClick={() => handleNavItemClick(item.href)}
-                    onMouseEnter={() => setHoveredItem(item.href)}
-                    onMouseLeave={() => setHoveredItem(null)}
-                    prefetch
                   >
-                    <motion.div animate={isActive ? { scale: [1, 1.1, 1] } : {}} transition={{ duration: 0.3 }}>
-                      <item.icon className="h-4 w-4" />
-                    </motion.div>
-                    <span>{item.title}</span>
-                  </Link>
+                    <Link
+                      href={item.href}
+                      className={cn(
+                        "flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors z-10 relative",
+                        isActive
+                          ? "text-blue-600 dark:text-blue-400"
+                          : "text-neutral-700 dark:text-neutral-200 hover:text-neutral-900 dark:hover:text-neutral-100",
+                      )}
+                      onClick={() => handleNavItemClick(item.href)}
+                      onMouseEnter={() => setHoveredItem(item.href)}
+                      onMouseLeave={() => setHoveredItem(null)}
+                      prefetch
+                    >
+                      <motion.div animate={isActive ? { scale: [1, 1.1, 1] } : {}} transition={{ duration: 0.3 }}>
+                        {item.icon && <item.icon className="h-4 w-4" />}
+                      </motion.div>
+                      <span>{item.title}</span>
+                    </Link>
+                  </div>
                 )
               })}
             </div>
