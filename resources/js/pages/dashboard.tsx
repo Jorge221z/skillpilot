@@ -197,7 +197,7 @@ export default function Dashboard({ jobMatches, totalMatches }: DashboardProps) 
     }
 
     return (
-      <Card className="bg-white dark:bg-gray-800/50">
+      <Card className="bg-white dark:bg-gray-800/50 border border-gray-300 dark:border-gray-600 shadow-sm">
         <CardContent className="p-4">
           <div className="flex items-center justify-between">
             <span className="text-sm text-gray-600 dark:text-gray-400">
@@ -255,7 +255,7 @@ export default function Dashboard({ jobMatches, totalMatches }: DashboardProps) 
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Dashboard" />
-      <div className="min-h-screen bg-white dark:bg-neutral-950">
+      <div className="min-h-screen bg-gray-100 dark:bg-neutral-950">
         <div className="container mx-auto px-8 md:px-12 lg:px-16 xl:px-20 py-8 space-y-8">
           {/* Header with Stats Cards */}
           <div className="flex items-center justify-between">
@@ -269,7 +269,7 @@ export default function Dashboard({ jobMatches, totalMatches }: DashboardProps) 
             {/* Stats Cards */}
             <div className="flex gap-8">
               {/* Total Matches */}
-              <Card className="w-96 border-l-4 border-l-emerald-500 shadow-sm hover:shadow-md transition-shadow bg-white dark:bg-gray-800/50">
+              <Card className="w-96 border-l-4 border-l-emerald-500 shadow-md hover:shadow-lg transition-shadow bg-white dark:bg-gray-800/50 border border-gray-300 dark:border-gray-600">
                 <CardHeader className="pb-3">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
@@ -288,7 +288,7 @@ export default function Dashboard({ jobMatches, totalMatches }: DashboardProps) 
               </Card>
 
               {/* Search Action */}
-              <Card className="w-96 border-l-4 border-l-violet-500 shadow-sm hover:shadow-md transition-shadow bg-white dark:bg-gray-800/50">
+              <Card className="w-96 border-l-4 border-l-violet-500 shadow-md hover:shadow-lg transition-shadow bg-white dark:bg-gray-800/50 border border-gray-300 dark:border-gray-600">
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-center">
                   <Button
@@ -338,10 +338,10 @@ export default function Dashboard({ jobMatches, totalMatches }: DashboardProps) 
             </div>
 
             {jobMatchesState.length === 0 ? (
-              <Card className="text-center py-12">
+              <Card className="text-center py-12 bg-white dark:bg-gray-800/30 border border-gray-300 dark:border-gray-600 shadow-sm">
                 <CardContent>
                   <div className="space-y-4">
-                    <div className="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto">
+                    <div className="w-16 h-16 bg-gray-300 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto">
                       <Search className="h-8 w-8 text-gray-400" />
                     </div>
                     <div>
@@ -365,9 +365,9 @@ export default function Dashboard({ jobMatches, totalMatches }: DashboardProps) 
             ) : (
               <div className="space-y-4">
                 {jobMatchesState.map((match) => (
-                  <Card key={match.id} className="hover:shadow-md transition-shadow bg-white dark:bg-gray-800/50">
-                    <CardHeader className="pb-4">
-                      <div className="flex justify-between items-start">
+                  <Card key={match.id} className="hover:shadow-xl transition-all duration-200 bg-white dark:bg-gray-800/50 border border-gray-300 dark:border-gray-600 shadow-md overflow-hidden">
+                    <CardHeader className="pb-4 pt-0 bg-gray-100 dark:bg-gray-800/30 border-b border-gray-200 dark:border-gray-600">
+                      <div className="flex justify-between items-start pt-6">
                         <div className="space-y-2 flex-1">
                           <div className="flex items-start gap-3">
                             <div className="p-2 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg">
@@ -415,7 +415,7 @@ export default function Dashboard({ jobMatches, totalMatches }: DashboardProps) 
                       {/* Job Description */}
                       <div className="space-y-2">
                         <h4 className="text-sm font-medium text-gray-900 dark:text-white">Descripción</h4>
-                        <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed bg-gray-50 dark:bg-gray-800 p-3 rounded-lg">
+                        <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed bg-gray-50 dark:bg-gray-700/50 p-4 rounded-lg border border-gray-300 dark:border-gray-600">
                           {truncateText(match.job_offer.description, 300)}
                         </p>
                       </div>
@@ -463,11 +463,11 @@ export default function Dashboard({ jobMatches, totalMatches }: DashboardProps) 
 
                         {/* Show analysis if available, otherwise show compact call-to-action */}
                         {(match.ai_feedback && match.ai_feedback.length > 0) || match.cover_letter ? (
-                          <div className="bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20 rounded-lg border border-purple-200 dark:border-purple-700 p-4">
+                          <div className="bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20 rounded-lg border border-purple-300 dark:border-purple-700 p-4 shadow-sm">
                             <AIAnalysisCard jobMatch={match} onAnalysisComplete={handleAnalysisComplete} />
                           </div>
                         ) : (
-                          <div className="bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20 rounded-lg p-4 border border-purple-200 dark:border-purple-700">
+                          <div className="bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20 rounded-lg p-4 border border-purple-300 dark:border-purple-700 shadow-sm">
                             <div className="flex items-center justify-between">
                               <div className="flex items-center gap-3">
                                 <div className="p-2 bg-purple-100 dark:bg-purple-800/50 rounded-lg">
@@ -482,7 +482,7 @@ export default function Dashboard({ jobMatches, totalMatches }: DashboardProps) 
                                   </p>
                                 </div>
                               </div>
-                              <div className="bg-white dark:bg-gray-800/50 rounded-lg border border-purple-200 dark:border-purple-600">
+                              <div className="bg-white dark:bg-gray-800/50 rounded-lg border border-purple-300 dark:border-purple-600 shadow-sm">
                                 <AIAnalysisCard jobMatch={match} onAnalysisComplete={handleAnalysisComplete} />
                               </div>
                             </div>
