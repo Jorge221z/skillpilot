@@ -273,11 +273,11 @@ export default function Dashboard({ jobMatches, totalMatches }: DashboardProps) 
                 <CardHeader className="pb-3">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <div className="p-2 bg-emerald-500 rounded-lg">
+                      <div className="p-2 bg-orange-400 rounded-lg">
                         <Trophy className="h-5 w-5 text-white" />
                       </div>
                       <div>
-                        <CardTitle className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">
+                        <CardTitle className="text-2xl font-bold text-orange-400 dark:text-orange-400">
                           {totalMatches}
                         </CardTitle>
                         <p className="text-sm text-gray-600 dark:text-gray-400">Ofertas encontradas</p>
@@ -294,7 +294,7 @@ export default function Dashboard({ jobMatches, totalMatches }: DashboardProps) 
                   <Button
                     onClick={handleFetchJobs}
                     disabled={processing}
-                    className="w-full h-12 bg-violet-500 hover:bg-violet-600 text-white text-lg font-semibold"
+                    className="w-full h-12 bg-blue-500 hover:bg-blue-600 text-white text-lg font-semibold hover:cursor-pointer"
                   >
                     {processing ? (
                       <div className="flex items-center gap-2">
@@ -366,7 +366,7 @@ export default function Dashboard({ jobMatches, totalMatches }: DashboardProps) 
               <div className="space-y-4">
                 {jobMatchesState.map((match) => (
                   <Card key={match.id} className="hover:shadow-xl transition-all duration-200 bg-white dark:bg-gray-800/50 border border-gray-300 dark:border-gray-600 shadow-md overflow-hidden pt-0 mt-0">
-                    <CardHeader className="p-0 bg-gray-100 dark:bg-gray-800/30 border-b border-gray-200 dark:border-gray-600">
+                    <CardHeader className="p-0 bg-gray-5 dark:bg-gray-800/30 border-b border-gray-200 dark:border-gray-600">
                       <div className="flex justify-between items-start p-6 pb-4">
                         <div className="space-y-2 flex-1">
                           <div className="flex items-start gap-3">
