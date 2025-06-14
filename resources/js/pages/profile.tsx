@@ -283,7 +283,7 @@ export default function Profile() {
                       {/* Position Tip */}
                       <div className="mt-4">
                         <p className="text-xs text-gray-500 dark:text-gray-400 italic">
-                          💡 Tip: Los nombres de los puestos deben estar en inglés para obtener mejores resultados (Ej: Python Developer)
+                          💡 Tip: El nombre del puesto debe estar en inglés para obtener mejores resultados (Ej: Python Developer, AI Engineer)
                         </p>
                       </div>
                     </div>
