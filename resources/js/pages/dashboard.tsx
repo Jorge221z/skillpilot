@@ -287,31 +287,31 @@ export default function Dashboard({ jobMatches, totalMatches }: DashboardProps) 
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Dashboard" />
       <div className="min-h-screen bg-gray-100 dark:bg-neutral-800">
-        <div className="container mx-auto px-8 md:px-12 lg:px-16 xl:px-20 py-8 space-y-8">
+        <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20 py-4 sm:py-6 md:py-8 space-y-6 sm:space-y-8">
           {/* Header with Stats Cards */}
-          <div className="flex items-center justify-between">
-            <div className="border-l-4 border-l-indigo-500 pl-6 py-4">
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Ofertas</h1>
-              <p className="text-gray-600 dark:text-gray-400 mt-1">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+            <div className="border-l-4 border-l-indigo-500 pl-4 sm:pl-6 py-2 sm:py-4">
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">Ofertas</h1>
+              <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mt-1">
                 Encuentra oportunidades que coincidan con tu perfil profesional
               </p>
             </div>
 
             {/* Stats Cards */}
-            <div className="flex gap-8">
+            <div className="flex flex-col sm:flex-row gap-4 lg:gap-8">
               {/* Total Matches */}
-              <Card className="w-96 border-l-4 border-l-emerald-500 shadow-md hover:shadow-lg transition-shadow bg-white dark:bg-gray-800/50 border border-gray-300 dark:border-gray-600">
+              <Card className="w-full sm:w-80 lg:w-96 border-l-4 border-l-emerald-500 shadow-md hover:shadow-lg transition-shadow bg-white dark:bg-gray-800/50 border border-gray-300 dark:border-gray-600">
                 <CardHeader className="pb-3">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <div className="p-2 bg-orange-400 rounded-lg">
-                        <Trophy className="h-5 w-5 text-white" />
+                        <Trophy className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
                       </div>
                       <div>
-                        <CardTitle className="text-2xl font-bold text-orange-400 dark:text-orange-400">
+                        <CardTitle className="text-xl sm:text-2xl font-bold text-orange-400 dark:text-orange-400">
                           {totalMatches}
                         </CardTitle>
-                        <p className="text-sm text-gray-600 dark:text-gray-400">Ofertas encontradas</p>
+                        <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Ofertas encontradas</p>
                       </div>
                     </div>
                   </div>
@@ -319,23 +319,25 @@ export default function Dashboard({ jobMatches, totalMatches }: DashboardProps) 
               </Card>
 
               {/* Search Action */}
-              <Card className="w-96 border-l-4 border-l-violet-500 shadow-md hover:shadow-lg transition-shadow bg-white dark:bg-gray-800/50 border border-gray-300 dark:border-gray-600">
+              <Card className="w-full sm:w-80 lg:w-96 border-l-4 border-l-violet-500 shadow-md hover:shadow-lg transition-shadow bg-white dark:bg-gray-800/50 border border-gray-300 dark:border-gray-600">
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-center">
                   <Button
                     onClick={handleFetchJobs}
                     disabled={processing}
-                    className="w-full h-12 bg-blue-500 hover:bg-blue-600 text-white text-lg font-semibold hover:cursor-pointer"
+                    className="w-full h-10 sm:h-12 bg-blue-500 hover:bg-blue-600 text-white text-base sm:text-lg font-semibold hover:cursor-pointer"
                   >
                     {processing ? (
                       <div className="flex items-center gap-2">
-                        <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                        Buscando...
+                        <div className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                        <span className="hidden sm:inline">Buscando...</span>
+                        <span className="sm:hidden">...</span>
                       </div>
                     ) : (
                       <div className="flex items-center gap-2">
-                        <Search className="h-5 w-5" />
-                        Buscar Nuevas Ofertas
+                        <Search className="h-4 w-4 sm:h-5 sm:w-5" />
+                        <span className="hidden sm:inline">Buscar Nuevas Ofertas</span>
+                        <span className="sm:hidden">Buscar</span>
                       </div>
                     )}
                   </Button>
@@ -346,20 +348,20 @@ export default function Dashboard({ jobMatches, totalMatches }: DashboardProps) 
           </div>
 
           {/* Job Offers Section */}
-          <div className="space-y-6">
-            <div className="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 pb-4">
+          <div className="space-y-4 sm:space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-gray-200 dark:border-gray-700 pb-4 gap-4">
               <div>
-                <h2 className="text-xl font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-                  <Briefcase className="h-5 w-5 text-indigo-500" />
+                <h2 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+                  <Briefcase className="h-4 w-4 sm:h-5 sm:w-5 text-indigo-500" />
                   Ofertas de Trabajo
                 </h2>
-                <p className="text-gray-600 dark:text-gray-400">Oportunidades que coinciden contigo</p>
+                <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">Oportunidades que coinciden contigo</p>
               </div>
-              <div className="flex items-center gap-4">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
                 {jobMatches.total > 0 && (
                   <Badge
                     variant="outline"
-                    className="border-indigo-200 text-indigo-700 dark:border-indigo-700 dark:text-indigo-300"
+                    className="border-indigo-200 text-indigo-700 dark:border-indigo-700 dark:text-indigo-300 text-xs sm:text-sm w-fit"
                   >
                     {jobMatches.from}-{jobMatches.to} de {jobMatches.total}
                   </Badge>
@@ -369,17 +371,17 @@ export default function Dashboard({ jobMatches, totalMatches }: DashboardProps) 
             </div>
 
             {jobMatchesState.length === 0 ? (
-              <Card className="text-center py-12 bg-white dark:bg-gray-800/30 border border-gray-300 dark:border-gray-600 shadow-sm">
+              <Card className="text-center py-8 sm:py-12 bg-white dark:bg-gray-800/30 border border-gray-300 dark:border-gray-600 shadow-sm">
                 <CardContent>
                   <div className="space-y-4">
-                    <div className="w-16 h-16 bg-gray-300 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto">
-                      <Search className="h-8 w-8 text-gray-400" />
+                    <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gray-300 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto">
+                      <Search className="h-6 w-6 sm:h-8 sm:w-8 text-gray-400" />
                     </div>
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                      <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white">
                         No hay ofertas disponibles
                       </h3>
-                      <p className="text-gray-600 dark:text-gray-400">
+                      <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 px-4">
                         Haz clic en "Buscar Nuevas Ofertas" para encontrar oportunidades
                       </p>
                     </div>
@@ -398,37 +400,37 @@ export default function Dashboard({ jobMatches, totalMatches }: DashboardProps) 
                 {jobMatchesState.map((match) => (
                   <Card key={match.id} className="hover:shadow-xl transition-all duration-200 bg-white dark:bg-gray-800/50 border border-gray-300 dark:border-gray-600 shadow-md overflow-hidden pt-0 mt-0">
                     <CardHeader className="p-0 bg-gray-5 dark:bg-gray-800/30 border-b border-gray-200 dark:border-gray-600">
-                      <div className="flex justify-between items-start p-6 pb-4">
+                      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start p-4 sm:p-6 pb-3 sm:pb-4 gap-4">
                         <div className="space-y-2 flex-1">
                           <div className="flex items-start gap-3">
                             <div className="p-2 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg">
                               <Building2 className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
                             </div>
-                            <div className="space-y-1 flex-1">
-                              <CardTitle className="text-lg font-semibold text-gray-900 dark:text-white">
+                            <div className="space-y-1 flex-1 min-w-0">
+                              <CardTitle className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white leading-tight">
                                 {match.job_offer.title}
                               </CardTitle>
-                              <div className="flex flex-wrap items-center gap-3 text-sm text-gray-600 dark:text-gray-400">
-                                <span className="font-medium">{match.job_offer.company}</span>
+                              <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-xs sm:text-sm text-gray-600 dark:text-gray-400">
+                                <span className="font-medium truncate">{match.job_offer.company}</span>
                                 {match.job_offer.location && (
                                   <div className="flex items-center gap-1">
-                                    <MapPin className="h-3 w-3" />
-                                    <span>{match.job_offer.location}</span>
+                                    <MapPin className="h-3 w-3 flex-shrink-0" />
+                                    <span className="truncate">{match.job_offer.location}</span>
                                   </div>
                                 )}
                                 <div className="flex items-center gap-1">
-                                  <Clock className="h-3 w-3" />
+                                  <Clock className="h-3 w-3 flex-shrink-0" />
                                   <span>{formatDate(match.job_offer.created_at)}</span>
                                 </div>
                               </div>
                             </div>
                           </div>
                         </div>
-                        <div className="flex gap-2 ml-4">
-                          <Badge className="bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300">
+                        <div className="flex flex-row sm:flex-col lg:flex-row gap-2 sm:ml-4">
+                          <Badge className="bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300 text-xs whitespace-nowrap">
                             {match.job_offer.source}
                           </Badge>
-                          <Button size="sm" variant="outline" asChild>
+                          <Button size="sm" variant="outline" asChild className="flex-shrink-0">
                             <a
                               href={match.job_offer.url}
                               target="_blank"
@@ -436,17 +438,18 @@ export default function Dashboard({ jobMatches, totalMatches }: DashboardProps) 
                               className="flex items-center gap-1"
                             >
                               <ExternalLink className="h-3 w-3" />
-                              Ver Oferta
+                              <span className="hidden sm:inline">Ver Oferta</span>
+                              <span className="sm:hidden">Ver</span>
                             </a>
                           </Button>
                         </div>
                       </div>
                     </CardHeader>
-                    <CardContent className="space-y-4">
+                    <CardContent className="space-y-3 sm:space-y-4 p-4 sm:p-6">
                       {/* Job Description */}
                       <div className="space-y-2">
                         <h4 className="text-sm font-medium text-gray-900 dark:text-white">Descripción</h4>
-                        <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed bg-gray-50 dark:bg-gray-700/50 p-4 rounded-lg border border-gray-300 dark:border-gray-600">
+                        <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed bg-gray-50 dark:bg-gray-700/50 p-3 sm:p-4 rounded-lg border border-gray-300 dark:border-gray-600">
                           {truncateText(match.job_offer.description, 300)}
                         </p>
                       </div>
@@ -456,22 +459,22 @@ export default function Dashboard({ jobMatches, totalMatches }: DashboardProps) 
                         <div className="space-y-2">
                           <h4 className="text-sm font-medium text-gray-900 dark:text-white">Habilidades</h4>
                           <div className="flex flex-wrap gap-2">
-                            {match.job_offer.tags.slice(0, 8).map((tag, tagIndex) => (
+                            {match.job_offer.tags.slice(0, 6).map((tag, tagIndex) => (
                               <Badge
                                 key={tagIndex}
                                 variant="outline"
-                                className="bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-700"
+                                className="bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-700 text-xs"
                               >
                                 {tag}
                               </Badge>
                             ))}
-                            {match.job_offer.tags.length > 8 && (
+                            {match.job_offer.tags.length > 6 && (
                               <Badge
                                 variant="outline"
-                                className="cursor-pointer bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-900/30 dark:text-purple-300 dark:border-purple-700"
+                                className="cursor-pointer bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-900/30 dark:text-purple-300 dark:border-purple-700 text-xs"
                                 onClick={() => openTagsModal(match.job_offer.tags!, match.job_offer.title)}
                               >
-                                +{match.job_offer.tags.length - 8} más
+                                +{match.job_offer.tags.length - 6} más
                               </Badge>
                             )}
                           </div>
@@ -480,13 +483,13 @@ export default function Dashboard({ jobMatches, totalMatches }: DashboardProps) 
 
                       {/* AI Analysis */}
                       <div className="space-y-3">
-                        <div className="flex items-center justify-between">
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                           <h4 className="text-sm font-medium text-gray-900 dark:text-white flex items-center gap-2">
                             <Brain className="h-4 w-4 text-purple-500" />
                             Análisis con IA
                           </h4>
                           {match.match_score && (
-                            <Badge className="bg-purple-100 text-purple-700 border-purple-200 dark:bg-purple-900/30 dark:text-purple-300 dark:border-purple-700">
+                            <Badge className="bg-purple-100 text-purple-700 border-purple-200 dark:bg-purple-900/30 dark:text-purple-300 dark:border-purple-700 text-xs w-fit">
                               {match.match_score}% compatibilidad
                             </Badge>
                           )}
@@ -494,15 +497,15 @@ export default function Dashboard({ jobMatches, totalMatches }: DashboardProps) 
 
                         {/* Show analysis if available, otherwise show compact call-to-action */}
                         {(match.ai_feedback && match.ai_feedback.length > 0) || match.cover_letter ? (
-                          <div className="bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20 rounded-lg border border-purple-300 dark:border-purple-700 p-4 shadow-sm">
+                          <div className="bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20 rounded-lg border border-purple-300 dark:border-purple-700 p-3 sm:p-4 shadow-sm">
                             <AIAnalysisCard jobMatch={match} onAnalysisComplete={handleAnalysisComplete} />
                           </div>
                         ) : (
-                          <div className="bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20 rounded-lg p-4 border border-purple-300 dark:border-purple-700 shadow-sm">
-                            <div className="flex items-center justify-between">
+                          <div className="bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20 rounded-lg p-3 sm:p-4 border border-purple-300 dark:border-purple-700 shadow-sm">
+                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                               <div className="flex items-center gap-3">
                                 <div className="p-2 bg-purple-100 dark:bg-purple-800/50 rounded-lg">
-                                  <Brain className="h-5 w-5 text-purple-600 dark:text-purple-400" />
+                                  <Brain className="h-4 w-4 sm:h-5 sm:w-5 text-purple-600 dark:text-purple-400" />
                                 </div>
                                 <div>
                                   <p className="text-sm font-medium text-gray-900 dark:text-white">
@@ -534,11 +537,11 @@ export default function Dashboard({ jobMatches, totalMatches }: DashboardProps) 
 
       {/* Tags Modal */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="max-w-3xl">
+        <DialogContent className="max-w-[95vw] sm:max-w-2xl lg:max-w-3xl mx-4">
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Star className="h-5 w-5 text-indigo-500" />
-              Todas las habilidades - {selectedJobTitle}
+            <DialogTitle className="flex items-center gap-2 text-base sm:text-lg">
+              <Star className="h-4 w-4 sm:h-5 sm:w-5 text-indigo-500" />
+              <span className="truncate">Todas las habilidades - {selectedJobTitle}</span>
             </DialogTitle>
           </DialogHeader>
           <div className="py-4">
@@ -548,14 +551,14 @@ export default function Dashboard({ jobMatches, totalMatches }: DashboardProps) 
                   <Badge
                     key={index}
                     variant="outline"
-                    className="bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-700"
+                    className="bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-700 text-xs sm:text-sm"
                   >
                     {tag}
                   </Badge>
                 ))}
               </div>
             ) : (
-              <p className="text-gray-600 dark:text-gray-400 text-center py-8">
+              <p className="text-gray-600 dark:text-gray-400 text-center py-6 sm:py-8 text-sm sm:text-base">
                 No hay habilidades específicas listadas para esta oferta.
               </p>
             )}
