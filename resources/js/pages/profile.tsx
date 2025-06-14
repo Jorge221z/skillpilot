@@ -155,7 +155,17 @@ export default function Profile() {
       return
     }
 
+    if (!data.desired_position.trim()) {
+      toast.error("Por favor especifica el puesto deseado.")
+      return
+    }
+
     const validSkills = skills.filter((tech) => tech.trim() !== "")
+
+    if (validSkills.length === 0) {
+      toast.error("Por favor agrega al menos una habilidad o tecnología.")
+      return
+    }
 
     const formData = new FormData()
     formData.append("cv_file", selectedFile)
@@ -217,6 +227,14 @@ export default function Profile() {
   }
 
   const removeTechnology = (index: number) => {
+    const validSkills = skills.filter((tech) => tech.trim() !== "")
+
+    // No permitir eliminar si solo queda una skill válida o si es la única entrada
+    if (validSkills.length <= 1 && skills.length <= 1) {
+      toast.error("Debes mantener al menos una habilidad.")
+      return
+    }
+
     if (skills.length > 1) {
       const newSkills = skills.filter((_, i) => i !== index)
       setSkills(newSkills)
@@ -231,7 +249,7 @@ export default function Profile() {
 
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
-      <Head title="Profile" />
+      <Head title="Perfil" />
       <div className="min-h-screen bg-gray-100 dark:bg-neutral-800">
         <div className="container mx-auto px-4 py-8">
           {/* Header */}
@@ -538,7 +556,7 @@ export default function Profile() {
                   {/* Desired Position */}
                   <div className="space-y-2">
                     <Label htmlFor="desired_position" className="text-lg font-semibold text-gray-900 dark:text-white">
-                      Posición Deseada
+                      Posición Deseada *
                     </Label>
                     <Input
                       id="desired_position"
@@ -547,6 +565,7 @@ export default function Profile() {
                       value={data.desired_position}
                       onChange={(e) => setData("desired_position", e.target.value)}
                       className="border-gray-300 dark:border-gray-600 focus:border-teal-500 focus:ring-teal-500"
+                      required
                     />
                     {errors.desired_position && (
                       <p className="text-sm text-red-600 dark:text-red-400">{errors.desired_position}</p>
@@ -557,8 +576,11 @@ export default function Profile() {
                   <div className="space-y-2">
                     <Label className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
                       <Code className="h-5 w-5" />
-                      Habilidades y Tecnologías
+                      Habilidades y Tecnologías *
                     </Label>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                      Agrega al menos una habilidad o tecnología
+                    </p>
                     <div className="space-y-2">
                       {skills.map((tech, index) => (
                         <div key={index} className="flex items-center gap-2">
@@ -576,6 +598,7 @@ export default function Profile() {
                               size="icon"
                               onClick={() => removeTechnology(index)}
                               className="border-red-300 text-red-600 hover:bg-red-50 dark:border-red-700 dark:text-red-400 dark:hover:bg-red-900/20"
+                              disabled={skills.filter(s => s.trim() !== "").length <= 1}
                             >
                               <X className="h-4 w-4" />
                             </Button>
@@ -593,6 +616,11 @@ export default function Profile() {
                         Agregar Habilidad
                       </Button>
                     </div>
+                    {skills.filter(s => s.trim() !== "").length === 0 && (
+                      <p className="text-sm text-red-600 dark:text-red-400">
+                        Se requiere al menos una habilidad
+                      </p>
+                    )}
                     {errors.skills && <p className="text-sm text-red-600 dark:text-red-400">{errors.skills}</p>}
                   </div>
 
@@ -601,7 +629,7 @@ export default function Profile() {
                     <Button
                       type="submit"
                       className="bg-teal-500 hover:bg-teal-600 text-white px-8 py-3"
-                      disabled={isProcessing || !selectedFile}
+                      disabled={isProcessing || !selectedFile || !data.desired_position.trim() || skills.filter(s => s.trim() !== "").length === 0}
                       size="lg"
                     >
                       {isProcessing ? (
