@@ -302,7 +302,7 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
                       )}
                     </motion.button>
                   </TooltipTrigger>
-                  <TooltipContent className="bg-white dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 border border-neutral-200 dark:border-neutral-700">
+                  <TooltipContent side="bottom" className="bg-white dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 border border-neutral-200 dark:border-neutral-700">
                     <p>{appearance === 'dark' ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'}</p>
                   </TooltipContent>
                 </Tooltip>
@@ -348,7 +348,7 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
                           </motion.div>
                         )}
                       </TooltipTrigger>
-                      <TooltipContent className="bg-white dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 border border-neutral-200 dark:border-neutral-700">
+                      <TooltipContent side="bottom" className="bg-white dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 border border-neutral-200 dark:border-neutral-700">
                         <p>{item.title}</p>
                       </TooltipContent>
                     </Tooltip>
