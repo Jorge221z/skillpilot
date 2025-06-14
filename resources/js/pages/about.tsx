@@ -88,15 +88,22 @@ export default function About() {
           {/* Hero Section */}
           <div className="text-center mb-16">
             <div className="flex justify-center mb-6">
-              <div className="p-4 bg-gradient-to-br from-teal-500 to-blue-600 rounded-2xl shadow-lg">
-                <Rocket className="h-12 w-12 text-white" />
+              <div className="h-23 w-23 rounded-full bg-gradient-to-br from-blue-200 to-blue-800 p-0 shadow-lg shadow-blue-500/20">
+                <div className="relative h-full w-full">
+                  <img
+                    src="/skillpilot-logo.png"
+                    alt="SkillPilot Logo"
+                    className="h-full w-full object-cover rounded-full"
+                  />
+                </div>
               </div>
             </div>
-            <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-teal-600 to-blue-600 bg-clip-text text-transparent mb-6">
-              SkillPilot
+            <h1 className="text-4xl md:text-6xl font-bold mb-6">
+              <span className="text-blue-400">Skill</span>
+              <span className="text-orange-500">Pilot</span>
             </h1>
             <p className="text-xl md:text-2xl text-neutral-600 dark:text-neutral-300 mb-8 max-w-3xl mx-auto">
-              Tu copiloto inteligente para navegar el mundo laboral con IA avanzada
+              Tu copiloto inteligente para navegar hacia el mundo laboral
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               <Badge variant="outline" className="px-4 py-2 text-lg bg-teal-50 dark:bg-teal-900/20 border-teal-200 dark:border-teal-800">
