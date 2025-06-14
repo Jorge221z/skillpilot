@@ -1,7 +1,7 @@
 "use client"
 import AppLayout from "@/layouts/app-layout"
 import type { BreadcrumbItem } from "@/types"
-import { Head, useForm, router, Link } from "@inertiajs/react"
+import { Head, useForm, router, Link, usePage } from "@inertiajs/react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -71,6 +71,13 @@ interface DashboardProps {
   totalMatches: number
 }
 
+interface FlashMessages {
+  success?: string
+  error?: string
+  warning?: string
+  info?: string
+}
+
 const breadcrumbs: BreadcrumbItem[] = [
   {
     title: "Dashboard",
@@ -80,6 +87,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 export default function Dashboard({ jobMatches, totalMatches }: DashboardProps) {
   const { post, processing } = useForm()
+  const { props } = usePage<{ flash?: FlashMessages }>()
   const [selectedJobTags, setSelectedJobTags] = useState<string[]>([])
   const [selectedJobTitle, setSelectedJobTitle] = useState<string>("")
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -89,13 +97,36 @@ export default function Dashboard({ jobMatches, totalMatches }: DashboardProps) 
     setJobMatchesState(jobMatches.data)
   }, [jobMatches.data])
 
+  // Handle flash messages
+  useEffect(() => {
+    if (props.flash?.success) {
+      toast.success(props.flash.success, {
+        duration: 4000,
+      })
+    }
+    if (props.flash?.error) {
+      toast.error(props.flash.error, {
+        duration: 5000,
+      })
+    }
+    if (props.flash?.warning) {
+      toast.warning(props.flash.warning, {
+        duration: 4000,
+      })
+    }
+    if (props.flash?.info) {
+      toast.info(props.flash.info, {
+        duration: 4000,
+      })
+    }
+  }, [props.flash])
+
   const handleFetchJobs = () => {
     post(route("jobs.fetch-and-match"), {
       onSuccess: () => {
-        toast.success("¡Búsqueda de ofertas completada!", {
-          description: "Hemos encontrado nuevas oportunidades para ti",
-          duration: 4000,
-        })
+        // No mostramos toast aquí porque los mensajes flash se manejan automáticamente
+        // Si hay ofertas, se mostrará un mensaje de éxito via flash
+        // Si el perfil está incompleto, se redirigirá a /profile con mensaje de error
         router.reload({ only: ["jobMatches", "totalMatches"] })
       },
       onError: (errors) => {

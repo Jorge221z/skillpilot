@@ -21,7 +21,7 @@ class JobSearchController extends Controller
         $profile = $user->profile;
 
         if (!$profile || !$profile->desired_position || !$profile->skills) {
-            return back()->with('error', 'Por favor, completa tu perfil antes de buscar ofertas de trabajo.');
+            return redirect()->route('profile')->with('error', 'Por favor, completa tu perfil antes de buscar ofertas de trabajo.');
         }
 
         try {
@@ -98,7 +98,7 @@ class JobSearchController extends Controller
         $profile = $user->profile;
 
         if (!$profile || !$profile->desired_position || !$profile->skills) {
-            return back()->with('error', 'Por favor, completa tu perfil antes de buscar ofertas de trabajo.');
+            return redirect()->route('profile')->with('error', 'Por favor, completa tu perfil antes de buscar ofertas de trabajo.');
         }
 
         // Verificar que la fuente existe

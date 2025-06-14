@@ -6,13 +6,13 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Badge } from "@/components/ui/badge"
 import AppLayout from "@/layouts/app-layout"
 import type { BreadcrumbItem } from "@/types"
 import { Head, useForm, router, usePage } from "@inertiajs/react"
 import { useState, useEffect } from "react"
-import { Upload, FileText, User, Code, Plus, X, Edit, Save, Trash, CheckCircle, AlertCircle } from "lucide-react"
+import { Upload, FileText, User, Code, Plus, X, Edit, Save, Trash } from "lucide-react"
+import { toast } from "sonner"
 
 const breadcrumbs: BreadcrumbItem[] = [
   {
@@ -44,7 +44,6 @@ export default function Profile() {
   const [skills, setSkills] = useState<string[]>([""])
   const [dragOver, setDragOver] = useState(false)
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
-  const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null)
   const [isProcessing, setIsProcessing] = useState(false)
 
   const { data, setData, post, processing, errors, reset } = useForm({
@@ -66,10 +65,14 @@ export default function Profile() {
 
   useEffect(() => {
     if (props.flash?.success) {
-      setMessage({ type: "success", text: props.flash.success })
+      toast.success(props.flash.success, {
+        duration: 4000,
+      })
     }
     if (props.flash?.error) {
-      setMessage({ type: "error", text: props.flash.error })
+      toast.error(props.flash.error, {
+        duration: 5000,
+      })
     }
   }, [props.flash])
 
@@ -86,7 +89,6 @@ export default function Profile() {
       setSelectedFile(null)
     }
     setIsEditing(!isEditing)
-    setMessage(null)
   }
 
   const handleUpdate = (e: React.FormEvent) => {
@@ -105,7 +107,6 @@ export default function Profile() {
 
       router.post("/profile/process-cv", formData, {
         onStart: () => {
-          setMessage(null)
           setIsProcessing(true)
         },
         onFinish: () => {
@@ -117,10 +118,7 @@ export default function Profile() {
         },
         onError: (errors) => {
           console.error("Errores:", errors)
-          setMessage({
-            type: "error",
-            text: "Error al procesar el nuevo CV. Por favor, revisa los datos e inténtalo de nuevo.",
-          })
+          toast.error("Error al procesar el nuevo CV. Por favor, revisa los datos e inténtalo de nuevo.")
         },
       })
     } else {
@@ -132,7 +130,6 @@ export default function Profile() {
         },
         {
           onStart: () => {
-            setMessage(null)
             setIsProcessing(true)
           },
           onFinish: () => {
@@ -143,7 +140,7 @@ export default function Profile() {
           },
           onError: (errors) => {
             console.error("Errores:", errors)
-            setMessage({ type: "error", text: "Error al actualizar el perfil." })
+            toast.error("Error al actualizar el perfil.")
           },
         },
       )
@@ -154,7 +151,7 @@ export default function Profile() {
     e.preventDefault()
 
     if (!selectedFile) {
-      setMessage({ type: "error", text: "Por favor selecciona un archivo PDF." })
+      toast.error("Por favor selecciona un archivo PDF.")
       return
     }
 
@@ -170,7 +167,6 @@ export default function Profile() {
 
     router.post("/profile/process-cv", formData, {
       onStart: () => {
-        setMessage(null)
         setIsProcessing(true)
       },
       onFinish: () => {
@@ -184,10 +180,7 @@ export default function Profile() {
       },
       onError: (errors) => {
         console.error("Errores:", errors)
-        setMessage({
-          type: "error",
-          text: "Error al procesar el CV. Por favor, revisa los datos e inténtalo de nuevo.",
-        })
+        toast.error("Error al procesar el CV. Por favor, revisa los datos e inténtalo de nuevo.")
       },
     })
   }
@@ -195,9 +188,8 @@ export default function Profile() {
   const handleFileSelect = (file: File) => {
     if (file.type === "application/pdf") {
       setSelectedFile(file)
-      setMessage(null)
     } else {
-      setMessage({ type: "error", text: "Por favor selecciona un archivo PDF válido." })
+      toast.error("Por favor selecciona un archivo PDF válido.")
     }
   }
 
@@ -257,33 +249,6 @@ export default function Profile() {
 
           <Card className="w-full max-w-3xl mx-auto shadow-lg bg-white dark:bg-gray-800/50">
             <CardContent className="p-8 space-y-6">
-              {message && (
-                <Alert
-                  className={`${
-                    message.type === "error"
-                      ? "border-red-200 bg-red-50 dark:border-red-800 dark:bg-red-900/20"
-                      : "border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-900/20"
-                  }`}
-                >
-                  <div className="flex items-center gap-2">
-                    {message.type === "error" ? (
-                      <AlertCircle className="h-4 w-4 text-red-600 dark:text-red-400" />
-                    ) : (
-                      <CheckCircle className="h-4 w-4 text-green-600 dark:text-green-400" />
-                    )}
-                    <AlertDescription
-                      className={`${
-                        message.type === "error"
-                          ? "text-red-700 dark:text-red-300"
-                          : "text-green-700 dark:text-green-300"
-                      } font-medium`}
-                    >
-                      {message.text}
-                    </AlertDescription>
-                  </div>
-                </Alert>
-              )}
-
               {/* Reading View */}
               {props.userProfile && !isEditing ? (
                 <div className="space-y-8">
@@ -339,7 +304,7 @@ export default function Profile() {
                       </div>
                       <div className="pl-5">
                         <div className="flex items-center gap-3 p-4 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
-                          <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400" />
+                          <FileText className="h-5 w-5 text-green-600 dark:text-green-400" />
                           <div>
                             <p className="font-medium text-gray-900 dark:text-white">
                               {props.userProfile.cv_filename || "CV procesado exitosamente"}
