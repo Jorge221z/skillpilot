@@ -9,10 +9,11 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/co
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { UserMenuContent } from "@/components/user-menu-content"
 import { useInitials } from "@/hooks/use-initials"
+import { useAppearance } from "@/hooks/use-appearance"
 import { cn } from "@/lib/utils"
 import type { BreadcrumbItem, NavItem, SharedData } from "@/types"
 import { Link, usePage } from "@inertiajs/react"
-import { LayoutGrid, Menu, User, MessageCircle, ExternalLink, Info } from "lucide-react"
+import { LayoutGrid, Menu, User, MessageCircle, ExternalLink, Info, Sun, Moon } from "lucide-react"
 import AppLogo from "./app-logo"
 import AppLogoIcon from "./app-logo-icon"
 
@@ -63,6 +64,7 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
   const page = usePage<SharedData>()
   const { auth } = page.props
   const getInitials = useInitials()
+  const { appearance, updateAppearance } = useAppearance()
 
   // Track the currently selected nav item
   const [selectedItem, setSelectedItem] = useState<string | null>(null)
@@ -103,6 +105,12 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
   const handleNavItemClick = (href: string) => {
     if (href === selectedItem) return
     setSelectedItem(href)
+  }
+
+  // Handle theme toggle
+  const handleThemeToggle = () => {
+    const newTheme = appearance === 'dark' ? 'light' : 'dark'
+    updateAppearance(newTheme)
   }
 
   return (
@@ -274,6 +282,32 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
 
           <div className="ml-auto flex items-center space-x-2">
             <div className="relative flex items-center space-x-1">
+              {/* Theme Toggle Button */}
+              <TooltipProvider delayDuration={0}>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <motion.button
+                      onClick={handleThemeToggle}
+                      className="group ml-1 inline-flex h-9 w-9 items-center justify-center rounded-lg bg-transparent p-0 text-sm font-medium text-neutral-600 dark:text-neutral-400 ring-offset-background transition-all duration-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:text-neutral-900 dark:hover:text-neutral-100 hover:scale-105 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50"
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      <span className="sr-only">
+                        {appearance === 'dark' ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'}
+                      </span>
+                      {appearance === 'dark' ? (
+                        <Sun className="size-5 opacity-70 group-hover:opacity-100 transition-opacity duration-200" />
+                      ) : (
+                        <Moon className="size-5 opacity-70 group-hover:opacity-100 transition-opacity duration-200" />
+                      )}
+                    </motion.button>
+                  </TooltipTrigger>
+                  <TooltipContent className="bg-white dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 border border-neutral-200 dark:border-neutral-700">
+                    <p>{appearance === 'dark' ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'}</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+
               {/* Mejorar los botones de navegación derecha */}
               <div className="hidden lg:flex">
                 {rightNavItems.map((item) => (
