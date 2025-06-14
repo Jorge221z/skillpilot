@@ -1,64 +1,17 @@
 <?php
 
 use App\Http\Controllers\UserPreferencesController;
-use Illuminate\Http\Request;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\PageController;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Auth;
-use Inertia\Inertia;
 
-Route::get('/', function () {
-    return Inertia::render('welcome');
-})->name('home');
+Route::get('/', [PageController::class, 'home'])->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('dashboard', function (Request $request) {
-        $user = Auth::user();
+    Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-        // Obtener las ofertas del usuario con paginación
-        $matchesPaginated = $user->jobMatches()
-            ->with('jobOffer')
-            ->latest()
-            ->paginate(10);
-
-        // Mapear los datos para el frontend
-        $matches = $matchesPaginated->getCollection()->map(function ($match) {
-            return [
-                'id' => $match->id,
-                'job_offer_id' => $match->job_offer_id,
-                'match_score' => $match->match_score,
-                'tags' => $match->tags,
-                'ai_feedback' => $match->ai_feedback,
-                'cover_letter' => $match->cover_letter,
-                'created_at' => $match->created_at,
-                'job_offer' => [
-                    'id' => $match->jobOffer->id,
-                    'title' => $match->jobOffer->title,
-                    'company' => $match->jobOffer->company,
-                    'description' => $match->jobOffer->description,
-                    'location' => $match->jobOffer->location,
-                    'tags' => $match->jobOffer->tags,
-                    'url' => $match->jobOffer->url,
-                    'source' => $match->jobOffer->source,
-                    'created_at' => $match->jobOffer->created_at,
-                ]
-            ];
-        });
-
-        // Reemplazar la colección en el paginador
-        $matchesPaginated->setCollection($matches);
-
-        return Inertia::render('dashboard', [
-            'jobMatches' => $matchesPaginated,
-            'totalMatches' => $user->jobMatches()->count()
-        ]);
-    })->name('dashboard');
-
-    Route::get('profile', function () {
-        $userProfile = \App\Models\UserProfile::where('user_id', Auth::id())->first();
-        return Inertia::render('profile', [
-            'userProfile' => $userProfile
-        ]);
-    })->name('profile');
+    Route::get('profile', [ProfileController::class, 'show'])->name('profile');
 
     // Rutas para User Preferences
     Route::post('profile/process-cv', [UserPreferencesController::class, 'processCV'])->name('profile.process-cv');
@@ -74,19 +27,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('ai/analysis/{jobMatchId}', [\App\Http\Controllers\AIAnalysisController::class, 'getAnalysis'])->name('ai.get-analysis');
 
     // Ruta para Chatbot
-    Route::get('chatbot', function () {
-        return Inertia::render('chatbot');
-    })->name('chatbot');
+    Route::get('chatbot', [PageController::class, 'chatbot'])->name('chatbot');
 
     // Ruta para Sobre el Proyecto
-    Route::get('about', function () {
-        return Inertia::render('about');
-    })->name('about');
+    Route::get('about', [PageController::class, 'about'])->name('about');
 
     // Ruta para Términos y Condiciones
-    Route::get('terms-and-conditions', function () {
-        return Inertia::render('terms-and-conditions');
-    })->name('terms-and-conditions');
+    Route::get('terms-and-conditions', [PageController::class, 'termsAndConditions'])->name('terms-and-conditions');
 });
 
 require __DIR__.'/settings.php';
