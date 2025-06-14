@@ -13,11 +13,31 @@ export default function Welcome() {
         }
     }, []);
 
+    const jsonLd = {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "SkillPilot",
+        "description": "Plataforma inteligente que busca ofertas de empleo adaptadas a tus preferencias y te ayuda a optimizar tu candidatura mediante IA",
+        "url": "https://skillpilot.es",
+        "potentialAction": {
+            "@type": "SearchAction",
+            "target": "https://skillpilot.es/dashboard?q={search_term_string}",
+            "query-input": "required name=search_term_string"
+        },
+        "sameAs": [],
+        "publisher": {
+            "@type": "Organization",
+            "name": "SkillPilot",
+            "description": "Plataforma de búsqueda de empleo con inteligencia artificial"
+        }
+    };
+
     return (
         <>
-            <Head title="Plataforma de Búsqueda de Empleo con IA">
-                <link rel="preconnect" href="https://fonts.bunny.net" />
-                <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
+            <Head title='Búsqueda de Empleo con IA'>
+                <script type="application/ld+json">
+                    {JSON.stringify(jsonLd)}
+                </script>
             </Head>
             <div className="flex min-h-screen flex-col bg-gradient-to-b from-slate-950 to-slate-900 text-white">
                 {/* Header con navegación */}

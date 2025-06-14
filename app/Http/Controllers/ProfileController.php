@@ -15,7 +15,12 @@ class ProfileController extends Controller
         $userProfile = UserProfile::where('user_id', Auth::id())->first();
 
         return Inertia::render('profile', [
-            'userProfile' => $userProfile
+            'userProfile' => $userProfile,
+            'meta' => [
+                'title' => 'Mi Perfil - SkillPilot',
+                'description' => 'Gestiona tu perfil profesional y optimiza tu candidatura con las herramientas de IA de SkillPilot.',
+                'keywords' => 'perfil, CV, candidatura, optimización, SkillPilot'
+            ]
         ]);
     }
 }

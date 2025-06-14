@@ -8,6 +8,17 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [PageController::class, 'home'])->name('home');
 
+// Páginas públicas SEO-friendly
+Route::get('about', [PageController::class, 'about'])->name('about');
+Route::get('terms-and-conditions', [PageController::class, 'termsAndConditions'])->name('terms-and-conditions');
+
+// SEO Routes
+Route::get('sitemap.xml', function () {
+    return response()->file(public_path('sitemap.xml'), [
+        'Content-Type' => 'application/xml'
+    ]);
+});
+
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
@@ -26,14 +37,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('ai/analyze/{jobMatchId}', [\App\Http\Controllers\AIAnalysisController::class, 'analyzeJobOffer'])->name('ai.analyze');
     Route::get('ai/analysis/{jobMatchId}', [\App\Http\Controllers\AIAnalysisController::class, 'getAnalysis'])->name('ai.get-analysis');
 
-    // Ruta para Chatbot
+    // Ruta para Chatbot (requiere autenticación)
     Route::get('chatbot', [PageController::class, 'chatbot'])->name('chatbot');
-
-    // Ruta para Sobre el Proyecto
-    Route::get('about', [PageController::class, 'about'])->name('about');
-
-    // Ruta para Términos y Condiciones
-    Route::get('terms-and-conditions', [PageController::class, 'termsAndConditions'])->name('terms-and-conditions');
 });
 
 require __DIR__.'/settings.php';

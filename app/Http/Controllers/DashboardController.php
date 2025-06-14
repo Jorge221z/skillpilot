@@ -50,7 +50,12 @@ class DashboardController extends Controller
 
         return Inertia::render('dashboard', [
             'jobMatches' => $matchesPaginated,
-            'totalMatches' => $user->jobMatches()->count()
+            'totalMatches' => $user->jobMatches()->count(),
+            'meta' => [
+                'title' => 'Dashboard - SkillPilot',
+                'description' => 'Accede a tu panel de control personalizado con ofertas de empleo seleccionadas por IA según tu perfil.',
+                'keywords' => 'dashboard, panel control, ofertas personalizadas, SkillPilot'
+            ]
         ]);
     }
 }
