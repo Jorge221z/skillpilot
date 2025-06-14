@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { AlertCircle, Brain, FileText, Loader2, CheckCircle } from 'lucide-react';
+import { toast } from 'sonner';
 import AIAnalysisService from '@/services/AIAnalysisService';
 
 interface JobMatch {
@@ -181,9 +182,20 @@ export const AIAnalysisCard: React.FC<AIAnalysisCardProps> = ({ jobMatch, onAnal
                                         variant="outline"
                                         size="sm"
                                         className="flex-1"
-                                        onClick={() => {
-                                            const text = analysisData?.carta || jobMatch.cover_letter || '';
-                                            navigator.clipboard.writeText(text);
+                                        onClick={async () => {
+                                            try {
+                                                const text = analysisData?.carta || jobMatch.cover_letter || '';
+                                                await navigator.clipboard.writeText(text);
+                                                toast.success('Carta de presentación copiada al portapapeles', {
+                                                    duration: 3000,
+                                                    description: 'Ya puedes pegarla donde la necesites'
+                                                });
+                                            } catch (err) {
+                                                toast.error('Error al copiar la carta de presentación', {
+                                                    duration: 3000,
+                                                    description: 'Inténtalo de nuevo'
+                                                });
+                                            }
                                         }}
                                     >
                                         📋 Copiar
@@ -193,13 +205,26 @@ export const AIAnalysisCard: React.FC<AIAnalysisCardProps> = ({ jobMatch, onAnal
                                         size="sm"
                                         className="flex-1"
                                         onClick={() => {
-                                            const element = document.createElement('a');
-                                            const file = new Blob([analysisData?.carta || jobMatch.cover_letter || ''], {type: 'text/plain'});
-                                            element.href = URL.createObjectURL(file);
-                                            element.download = `carta-${jobMatch.job_offer.company}-${jobMatch.job_offer.title}.txt`;
-                                            document.body.appendChild(element);
-                                            element.click();
-                                            document.body.removeChild(element);
+                                            try {
+                                                const element = document.createElement('a');
+                                                const file = new Blob([analysisData?.carta || jobMatch.cover_letter || ''], {type: 'text/plain'});
+                                                element.href = URL.createObjectURL(file);
+                                                const fileName = `carta-${jobMatch.job_offer.company}-${jobMatch.job_offer.title}.txt`;
+                                                element.download = fileName;
+                                                document.body.appendChild(element);
+                                                element.click();
+                                                document.body.removeChild(element);
+                                                
+                                                toast.success('Carta de presentación descargada', {
+                                                    duration: 3000,
+                                                    description: `Archivo guardado como: ${fileName}`
+                                                });
+                                            } catch (err) {
+                                                toast.error('Error al descargar la carta de presentación', {
+                                                    duration: 3000,
+                                                    description: 'Inténtalo de nuevo'
+                                                });
+                                            }
                                         }}
                                     >
                                         📄 Descargar
