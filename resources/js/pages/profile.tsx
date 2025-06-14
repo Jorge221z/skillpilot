@@ -9,9 +9,9 @@ import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
 import AppLayout from "@/layouts/app-layout"
 import type { BreadcrumbItem } from "@/types"
-import { Head, useForm, router, usePage } from "@inertiajs/react"
+import { Head, useForm, router, usePage, Link } from "@inertiajs/react"
 import { useState, useEffect } from "react"
-import { Upload, FileText, User, Code, Plus, X, Edit, Save, Trash } from "lucide-react"
+import { Upload, FileText, User, Code, Plus, X, Edit, Save, Trash, ExternalLink } from "lucide-react"
 import { toast } from "sonner"
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -618,6 +618,25 @@ export default function Profile() {
               )}
             </CardContent>
           </Card>
+
+          {/* Footer */}
+          <footer className="mt-12 text-center border-t border-gray-200 dark:border-gray-700 pt-8">
+            <div className="max-w-3xl mx-auto">
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                Al usar nuestros servicios, aceptas nuestros{" "}
+                <Link
+                  href="/terms-and-conditions"
+                  className="text-teal-600 hover:text-teal-700 dark:text-teal-400 dark:hover:text-teal-300 underline inline-flex items-center gap-1"
+                >
+                  Términos y Condiciones
+                  <ExternalLink className="h-3 w-3" />
+                </Link>
+              </p>
+              <p className="text-xs text-gray-500 dark:text-gray-500">
+                Tratamos tus datos personales y CVs con la máxima confidencialidad y seguridad
+              </p>
+            </div>
+          </footer>
         </div>
       </div>
     </AppLayout>

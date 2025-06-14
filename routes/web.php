@@ -82,6 +82,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('about', function () {
         return Inertia::render('about');
     })->name('about');
+
+    // Ruta para Términos y Condiciones
+    Route::get('terms-and-conditions', function () {
+        return Inertia::render('terms-and-conditions');
+    })->name('terms-and-conditions');
 });
 
 require __DIR__.'/settings.php';
