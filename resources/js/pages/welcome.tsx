@@ -1,13 +1,21 @@
 import { type SharedData } from '@/types';
-import { Head, Link, usePage } from '@inertiajs/react';
+import { Head, Link, usePage, router } from '@inertiajs/react';
 import { User } from 'lucide-react';
+import { useEffect } from 'react';
 
 export default function Welcome() {
     const { auth } = usePage<SharedData>().props;
 
+    // Redirigir automáticamente si el usuario está autenticado
+    useEffect(() => {
+        if (auth.user) {
+            window.location.href = route('dashboard');
+        }
+    }, []);
+
     return (
         <>
-            <Head title="SkillPilot - Plataforma de Búsqueda de Empleo con IA">
+            <Head title="Plataforma de Búsqueda de Empleo con IA">
                 <link rel="preconnect" href="https://fonts.bunny.net" />
                 <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
             </Head>
