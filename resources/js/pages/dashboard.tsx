@@ -1,28 +1,15 @@
-"use client"
 import AppLayout from "@/layouts/app-layout"
 import type { BreadcrumbItem } from "@/types"
-import { Head, useForm, router, Link, usePage } from "@inertiajs/react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Head, useForm, router, usePage } from "@inertiajs/react"
 import { Badge } from "@/components/ui/badge"
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import {
-  ExternalLink,
-  Search,
-  Building2,
-  MapPin,
-  Brain,
-  ChevronLeft,
-  ChevronRight,
-  Trophy,
-  Star,
-  Clock,
-  Activity,
-  Briefcase,
-} from "lucide-react"
+import { Briefcase } from "lucide-react"
 import { toast } from "sonner"
 import { useState, useEffect } from "react"
-import AIAnalysisCard from "@/components/AIAnalysisCard"
+import PaginationControls from "@/components/dashboard/PaginationControls"
+import DashboardStats from "@/components/dashboard/DashboardStats"
+import JobCard from "@/components/dashboard/JobCard"
+import TagsModal from "@/components/dashboard/TagsModal"
+import EmptyState from "@/components/dashboard/EmptyState"
 
 interface PaginationLinks {
   url: string | null
@@ -135,11 +122,6 @@ export default function Dashboard({ jobMatches, totalMatches }: DashboardProps) 
     })
   }
 
-  const truncateText = (text: string, maxLength: number) => {
-    if (text.length <= maxLength) return text
-    return text.substring(0, maxLength) + "..."
-  }
-
   const openTagsModal = (tags: string[], jobTitle: string) => {
     setSelectedJobTags(tags)
     setSelectedJobTitle(jobTitle)
@@ -162,127 +144,6 @@ export default function Dashboard({ jobMatches, totalMatches }: DashboardProps) 
     toast.success("¡Análisis completado con éxito!")
   }
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString)
-    const now = new Date()
-    const diffTime = Math.abs(now.getTime() - date.getTime())
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-
-    if (diffDays === 1) return "Hace 1 día"
-    if (diffDays < 7) return `Hace ${diffDays} días`
-    if (diffDays < 30) return `Hace ${Math.ceil(diffDays / 7)} semanas`
-    return date.toLocaleDateString("es-ES")
-  }
-
-  // Count offers with recent activity (last 7 days)
-  const getRecentOffersCount = () => {
-    const sevenDaysAgo = new Date()
-    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7)
-    return jobMatchesState.filter(match =>
-      new Date(match.job_offer.created_at) >= sevenDaysAgo
-    ).length
-  }
-
-  // Pagination component
-  const PaginationControls = ({ compact = false }: { compact?: boolean }) => {
-    if (jobMatches.last_page <= 1) return null
-
-    if (compact) {
-      return (
-        <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            disabled={!jobMatches.prev_page_url}
-            asChild={!!jobMatches.prev_page_url}
-          >
-            {jobMatches.prev_page_url ? (
-              <Link href={jobMatches.prev_page_url}>
-                <ChevronLeft className="h-4 w-4" />
-              </Link>
-            ) : (
-              <ChevronLeft className="h-4 w-4" />
-            )}
-          </Button>
-
-          <span className="px-2 py-1 bg-indigo-100 dark:bg-indigo-900/30 rounded text-xs font-medium text-indigo-700 dark:text-indigo-300">
-            {jobMatches.current_page}/{jobMatches.last_page}
-          </span>
-
-          <Button
-            variant="outline"
-            size="sm"
-            disabled={!jobMatches.next_page_url}
-            asChild={!!jobMatches.next_page_url}
-          >
-            {jobMatches.next_page_url ? (
-              <Link href={jobMatches.next_page_url}>
-                <ChevronRight className="h-4 w-4" />
-              </Link>
-            ) : (
-              <ChevronRight className="h-4 w-4" />
-            )}
-          </Button>
-        </div>
-      )
-    }
-
-    return (
-      <Card className="bg-white dark:bg-gray-800/50 border border-gray-300 dark:border-gray-600 shadow-sm">
-        <CardContent className="p-4">
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-gray-600 dark:text-gray-400">
-              Mostrando {jobMatches.from}-{jobMatches.to} de {jobMatches.total} ofertas
-            </span>
-            <div className="flex items-center gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                disabled={!jobMatches.prev_page_url}
-                asChild={!!jobMatches.prev_page_url}
-              >
-                {jobMatches.prev_page_url ? (
-                  <Link href={jobMatches.prev_page_url} className="flex items-center gap-1">
-                    <ChevronLeft className="h-4 w-4" />
-                    Anterior
-                  </Link>
-                ) : (
-                  <span className="flex items-center gap-1">
-                    <ChevronLeft className="h-4 w-4" />
-                    Anterior
-                  </span>
-                )}
-              </Button>
-
-              <span className="px-3 py-1 bg-indigo-100 dark:bg-indigo-900/30 rounded text-sm font-medium text-indigo-700 dark:text-indigo-300">
-                {jobMatches.current_page} / {jobMatches.last_page}
-              </span>
-
-              <Button
-                variant="outline"
-                size="sm"
-                disabled={!jobMatches.next_page_url}
-                asChild={!!jobMatches.next_page_url}
-              >
-                {jobMatches.next_page_url ? (
-                  <Link href={jobMatches.next_page_url} className="flex items-center gap-1">
-                    Siguiente
-                    <ChevronRight className="h-4 w-4" />
-                  </Link>
-                ) : (
-                  <span className="flex items-center gap-1">
-                    Siguiente
-                    <ChevronRight className="h-4 w-4" />
-                  </span>
-                )}
-              </Button>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-    )
-  }
-
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Dashboard" />
@@ -298,53 +159,11 @@ export default function Dashboard({ jobMatches, totalMatches }: DashboardProps) 
             </div>
 
             {/* Stats Cards */}
-            <div className="flex flex-col sm:flex-row gap-4 lg:gap-8">
-              {/* Total Matches */}
-              <Card className="w-full sm:w-80 lg:w-96 border-l-4 border-l-emerald-500 shadow-md hover:shadow-lg transition-shadow bg-white dark:bg-gray-800/50 border border-gray-300 dark:border-gray-600">
-                <CardHeader className="pb-3">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 bg-orange-400 rounded-lg">
-                        <Trophy className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
-                      </div>
-                      <div>
-                        <CardTitle className="text-xl sm:text-2xl font-bold text-orange-400 dark:text-orange-400">
-                          {totalMatches}
-                        </CardTitle>
-                        <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Ofertas encontradas</p>
-                      </div>
-                    </div>
-                  </div>
-                </CardHeader>
-              </Card>
-
-              {/* Search Action */}
-              <Card className="w-full sm:w-80 lg:w-96 border-l-4 border-l-violet-500 shadow-md hover:shadow-lg transition-shadow bg-white dark:bg-gray-800/50 border border-gray-300 dark:border-gray-600">
-              <CardHeader className="pb-3">
-                <div className="flex items-center justify-center">
-                  <Button
-                    onClick={handleFetchJobs}
-                    disabled={processing}
-                    className="w-full h-10 sm:h-12 bg-blue-500 hover:bg-blue-600 text-white text-base sm:text-lg font-semibold hover:cursor-pointer"
-                  >
-                    {processing ? (
-                      <div className="flex items-center gap-2">
-                        <div className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                        <span className="hidden sm:inline">Buscando...</span>
-                        <span className="sm:hidden">...</span>
-                      </div>
-                    ) : (
-                      <div className="flex items-center gap-2">
-                        <Search className="h-4 w-4 sm:h-5 sm:w-5" />
-                        <span className="hidden sm:inline">Buscar Nuevas Ofertas</span>
-                        <span className="sm:hidden">Buscar</span>
-                      </div>
-                    )}
-                  </Button>
-                </div>
-              </CardHeader>
-            </Card>
-            </div>
+            <DashboardStats
+              totalMatches={totalMatches}
+              processing={processing}
+              onFetchJobs={handleFetchJobs}
+            />
           </div>
 
           {/* Job Offers Section */}
@@ -366,169 +185,25 @@ export default function Dashboard({ jobMatches, totalMatches }: DashboardProps) 
                     {jobMatches.from}-{jobMatches.to} de {jobMatches.total}
                   </Badge>
                 )}
-                <PaginationControls compact={true} />
+                <PaginationControls paginatedData={jobMatches} compact={true} />
               </div>
             </div>
 
             {jobMatchesState.length === 0 ? (
-              <Card className="text-center py-8 sm:py-12 bg-white dark:bg-gray-800/30 border border-gray-300 dark:border-gray-600 shadow-sm">
-                <CardContent>
-                  <div className="space-y-4">
-                    <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gray-300 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto">
-                      <Search className="h-6 w-6 sm:h-8 sm:w-8 text-gray-400" />
-                    </div>
-                    <div>
-                      <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white">
-                        No hay ofertas disponibles
-                      </h3>
-                      <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 px-4">
-                        Haz clic en "Buscar Nuevas Ofertas" para encontrar oportunidades
-                      </p>
-                    </div>
-                    <Button
-                      onClick={handleFetchJobs}
-                      disabled={processing}
-                      className="bg-indigo-500 hover:bg-indigo-600 text-white"
-                    >
-                      {processing ? "Buscando..." : "Buscar Ofertas"}
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
+              <EmptyState processing={processing} onFetchJobs={handleFetchJobs} />
             ) : (
               <div className="space-y-4">
                 {jobMatchesState.map((match) => (
-                  <Card key={match.id} className="hover:shadow-xl transition-all duration-200 bg-white dark:bg-gray-800/50 border border-gray-300 dark:border-gray-600 shadow-md overflow-hidden pt-0 mt-0">
-                    <CardHeader className="p-0 bg-gray-5 dark:bg-gray-800/30 border-b border-gray-200 dark:border-gray-600">
-                      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start p-4 sm:p-6 pb-3 sm:pb-4 gap-4">
-                        <div className="space-y-2 flex-1">
-                          <div className="flex items-start gap-3">
-                            <div className="p-2 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg">
-                              <Building2 className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
-                            </div>
-                            <div className="space-y-1 flex-1 min-w-0">
-                              <CardTitle className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white leading-tight">
-                                {match.job_offer.title}
-                              </CardTitle>
-                              <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-xs sm:text-sm text-gray-600 dark:text-gray-400">
-                                <span className="font-medium truncate">{match.job_offer.company}</span>
-                                {match.job_offer.location && (
-                                  <div className="flex items-center gap-1">
-                                    <MapPin className="h-3 w-3 flex-shrink-0" />
-                                    <span className="truncate">{match.job_offer.location}</span>
-                                  </div>
-                                )}
-                                <div className="flex items-center gap-1">
-                                  <Clock className="h-3 w-3 flex-shrink-0" />
-                                  <span>{formatDate(match.job_offer.created_at)}</span>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="flex flex-row sm:flex-col lg:flex-row gap-2 sm:ml-4">
-                          <Badge className="bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300 text-xs whitespace-nowrap">
-                            {match.job_offer.source}
-                          </Badge>
-                          <Button size="sm" variant="outline" asChild className="flex-shrink-0">
-                            <a
-                              href={match.job_offer.url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="flex items-center gap-1"
-                            >
-                              <ExternalLink className="h-3 w-3" />
-                              <span className="hidden sm:inline">Ver Oferta</span>
-                              <span className="sm:hidden">Ver</span>
-                            </a>
-                          </Button>
-                        </div>
-                      </div>
-                    </CardHeader>
-                    <CardContent className="space-y-3 sm:space-y-4 p-4 sm:p-6">
-                      {/* Job Description */}
-                      <div className="space-y-2">
-                        <h4 className="text-sm font-medium text-gray-900 dark:text-white">Descripción</h4>
-                        <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed bg-gray-50 dark:bg-gray-700/50 p-3 sm:p-4 rounded-lg border border-gray-300 dark:border-gray-600">
-                          {truncateText(match.job_offer.description, 300)}
-                        </p>
-                      </div>
-
-                      {/* Skills */}
-                      {match.job_offer.tags && match.job_offer.tags.length > 0 && (
-                        <div className="space-y-2">
-                          <h4 className="text-sm font-medium text-gray-900 dark:text-white">Habilidades</h4>
-                          <div className="flex flex-wrap gap-2">
-                            {match.job_offer.tags.slice(0, 6).map((tag, tagIndex) => (
-                              <Badge
-                                key={tagIndex}
-                                variant="outline"
-                                className="bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-700 text-xs"
-                              >
-                                {tag}
-                              </Badge>
-                            ))}
-                            {match.job_offer.tags.length > 6 && (
-                              <Badge
-                                variant="outline"
-                                className="cursor-pointer bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-900/30 dark:text-purple-300 dark:border-purple-700 text-xs"
-                                onClick={() => openTagsModal(match.job_offer.tags!, match.job_offer.title)}
-                              >
-                                +{match.job_offer.tags.length - 6} más
-                              </Badge>
-                            )}
-                          </div>
-                        </div>
-                      )}
-
-                      {/* AI Analysis */}
-                      <div className="space-y-3">
-                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-                          <h4 className="text-sm font-medium text-gray-900 dark:text-white flex items-center gap-2">
-                            <Brain className="h-4 w-4 text-purple-500" />
-                            Análisis con IA
-                          </h4>
-                          {match.match_score && (
-                            <Badge className="bg-purple-100 text-purple-700 border-purple-200 dark:bg-purple-900/30 dark:text-purple-300 dark:border-purple-700 text-xs w-fit">
-                              {match.match_score}% compatibilidad
-                            </Badge>
-                          )}
-                        </div>
-
-                        {/* Show analysis if available, otherwise show compact call-to-action */}
-                        {(match.ai_feedback && match.ai_feedback.length > 0) || match.cover_letter ? (
-                          <div className="bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20 rounded-lg border border-purple-300 dark:border-purple-700 p-3 sm:p-4 shadow-sm">
-                            <AIAnalysisCard jobMatch={match} onAnalysisComplete={handleAnalysisComplete} />
-                          </div>
-                        ) : (
-                          <div className="bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20 rounded-lg p-3 sm:p-4 border border-purple-300 dark:border-purple-700 shadow-sm">
-                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                              <div className="flex items-center gap-3">
-                                <div className="p-2 bg-purple-100 dark:bg-purple-800/50 rounded-lg">
-                                  <Brain className="h-4 w-4 sm:h-5 sm:w-5 text-purple-600 dark:text-purple-400" />
-                                </div>
-                                <div>
-                                  <p className="text-sm font-medium text-gray-900 dark:text-white">
-                                    Análisis pendiente
-                                  </p>
-                                  <p className="text-xs text-gray-600 dark:text-gray-400">
-                                    Obtén recomendaciones y carta personalizada
-                                  </p>
-                                </div>
-                              </div>
-                              <div className="bg-white dark:bg-gray-800/50 rounded-lg border border-purple-300 dark:border-purple-600 shadow-sm">
-                                <AIAnalysisCard jobMatch={match} onAnalysisComplete={handleAnalysisComplete} />
-                              </div>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </CardContent>
-                  </Card>
+                  <JobCard
+                    key={match.id}
+                    match={match}
+                    onAnalysisComplete={handleAnalysisComplete}
+                    onTagsModalOpen={openTagsModal}
+                  />
                 ))}
 
                 {/* Pagination */}
-                <PaginationControls />
+                <PaginationControls paginatedData={jobMatches} />
               </div>
             )}
           </div>
@@ -536,35 +211,12 @@ export default function Dashboard({ jobMatches, totalMatches }: DashboardProps) 
       </div>
 
       {/* Tags Modal */}
-      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="max-w-[95vw] sm:max-w-2xl lg:max-w-3xl mx-4">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2 text-base sm:text-lg">
-              <Star className="h-4 w-4 sm:h-5 sm:w-5 text-indigo-500" />
-              <span className="truncate">Todas las habilidades - {selectedJobTitle}</span>
-            </DialogTitle>
-          </DialogHeader>
-          <div className="py-4">
-            {selectedJobTags.length > 0 ? (
-              <div className="flex flex-wrap gap-2">
-                {selectedJobTags.map((tag, index) => (
-                  <Badge
-                    key={index}
-                    variant="outline"
-                    className="bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-700 text-xs sm:text-sm"
-                  >
-                    {tag}
-                  </Badge>
-                ))}
-              </div>
-            ) : (
-              <p className="text-gray-600 dark:text-gray-400 text-center py-6 sm:py-8 text-sm sm:text-base">
-                No hay habilidades específicas listadas para esta oferta.
-              </p>
-            )}
-          </div>
-        </DialogContent>
-      </Dialog>
+      <TagsModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        tags={selectedJobTags}
+        jobTitle={selectedJobTitle}
+      />
     </AppLayout>
   )
 }
