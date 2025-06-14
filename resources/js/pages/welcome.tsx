@@ -247,15 +247,9 @@ export default function Welcome() {
                                     <span className="text-orange-500">Pilot</span>
                                 </span>
                             </div>
-                            <div className="flex flex-wrap justify-center gap-4 sm:gap-6 text-xs sm:text-sm text-slate-400">
-                                <a href="#" className="hover:text-white transition-colors">Sobre Nosotros</a>
-                                <a href="#" className="hover:text-white transition-colors">Política de Privacidad</a>
-                                <a href="#" className="hover:text-white transition-colors">Términos de Servicio</a>
-                                <a href="#" className="hover:text-white transition-colors">Contacto</a>
+                            <div className="text-xs sm:text-sm text-slate-500">
+                                © {new Date().getFullYear()} SkillPilot. Todos los derechos reservados.
                             </div>
-                        </div>
-                        <div className="mt-4 sm:mt-6 pt-4 sm:pt-6 border-t border-slate-800 text-center text-xs sm:text-sm text-slate-500">
-                            © {new Date().getFullYear()} SkillPilot. Todos los derechos reservados.
                         </div>
                     </div>
                 </footer>
