@@ -1,6 +1,6 @@
 # 🧭 SkillPilot
 
-## Tu copiloto inteligente para navegar el mercado laboral
+## Tu copiloto inteligente para navegar hacia el mundo laboral
 
 SkillPilot es una plataforma innovadora que utiliza inteligencia artificial para guiarte hacia las mejores oportunidades laborales, adaptándose a tus habilidades y aspiraciones profesionales mientras optimiza cada paso de tu candidatura.
 
@@ -8,17 +8,11 @@ SkillPilot es una plataforma innovadora que utiliza inteligencia artificial para
 
 ## ✨ Características principales
 
-**🎯 Navegación personalizada**
+**⚡ Navegación personalizada y automatica**
 Descubre ofertas de empleo perfectamente alineadas con tu perfil profesional, experiencia y objetivos de carrera mediante matching inteligente.
 
 **🤖 Optimización de candidatura con IA**
 Eleva tu perfil profesional con nuestro asistente de IA que perfecciona tu CV, carta de presentación y estrategia de aplicación.
-
-**📊 Insights del mercado laboral**
-Obtén análisis detallados sobre tendencias salariales, demanda de habilidades y probabilidades de éxito en diferentes sectores.
-
-**⚡ Piloto automático**
-Activa el modo automático para que SkillPilot aplique inteligentemente a las ofertas que mejor se ajusten a tu perfil y preferencias.
 
 ---
 
@@ -36,19 +30,7 @@ SkillPilot está impulsado por **Llama 3.3 Instruct 70B**, el modelo de lenguaje
 ## 🚧 Estado del proyecto
 
 **Actualmente en fase MVP** - SkillPilot está en desarrollo activo, construyendo las funcionalidades fundamentales que revolucionarán tu búsqueda de empleo. Tu experiencia y feedback son esenciales para moldear el futuro de la plataforma.
-
-### Hoja de ruta
-- [ ] Dashboard de métricas avanzadas
-- [ ] Conexión con múltiples portales de empleo
-- [ ] Sistema de alertas inteligentes
-- [ ] API para integraciones externas
-- [ ] Aplicación móvil
-
----
-
-## 🎨 Capturas de pantalla
-
-*Próximamente - Las interfaces llegarán en las siguientes iteraciones del MVP*
+La plataforma está sujeta a cambios y puede haber ciertos fallos inesperados o ser inestable en ciertos momentos.
 
 ---
 
@@ -66,6 +48,7 @@ SkillPilot está impulsado por **Llama 3.3 Instruct 70B**, el modelo de lenguaje
 ## 📬 Contacto
 
 ¿Preguntas sobre SkillPilot? ¿Ideas para colaborar? Abre un issue o contáctanos directamente.
+Email de contacto: jorgemunozcast12@gmail.com
 
 ---
 
@@ -77,8 +60,8 @@ Este proyecto está bajo una licencia personalizada. Consulta el archivo `licens
 
 <div align="center">
 
-**Construido con ❤️ y mucha ☕**
+**Desarrollado como un 🚀 y mucha 🧠**
 
-*Pilotando carreras hacia el éxito, una oportunidad a la vez*
+*SkillPilot: Donde la tecnología encuentra el talento*
 
 </div>
