@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import AppLayout from "@/layouts/app-layout"
 import type { BreadcrumbItem } from "@/types"
 import { Head } from "@inertiajs/react"
-import { FileText, Shield, Eye, UserCheck, AlertTriangle, Scale } from "lucide-react"
+import { FileText, Shield, Eye, UserCheck, AlertTriangle, Scale, ExternalLink } from "lucide-react"
 
 const breadcrumbs: BreadcrumbItem[] = [
   {
@@ -189,12 +189,58 @@ export default function TermsAndConditions() {
               </CardContent>
             </Card>
 
+            {/* Licencia del Software */}
+            <Card className="shadow-lg bg-white dark:bg-gray-800/50">
+              <CardHeader className="border-b border-gray-200 dark:border-gray-700">
+                <div className="flex items-center gap-3">
+                  <FileText className="h-6 w-6 text-amber-500" />
+                  <h2 className="text-xl font-semibold text-gray-900 dark:text-white">8. Licencia del Software</h2>
+                </div>
+              </CardHeader>
+              <CardContent className="p-6 space-y-4">
+                <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
+                  SkillPilot está licenciado bajo una licencia personalizada con derechos de autor reservados
+                  a Jorge Muñoz Castillo (Jorge221z). El software se proporciona exclusivamente para fines
+                  educativos y de referencia.
+                </p>
+                <div className="space-y-3">
+                  <h3 className="text-lg font-medium text-gray-900 dark:text-white">Permisos:</h3>
+                  <ul className="list-disc list-inside space-y-2 text-gray-700 dark:text-gray-300 pl-4">
+                    <li>El uso, modificación o distribución requiere consentimiento explícito por escrito del autor</li>
+                    <li>Cualquier uso permitido debe incluir una atribución clara al autor original</li>
+                  </ul>
+                </div>
+                <div className="space-y-3">
+                  <h3 className="text-lg font-medium text-gray-900 dark:text-white">Prohibiciones:</h3>
+                  <ul className="list-disc list-inside space-y-2 text-gray-700 dark:text-gray-300 pl-4">
+                    <li>Uso no autorizado, copia, modificación, distribución o comercialización está estrictamente prohibido</li>
+                    <li>No se otorgan derechos de código abierto bajo esta licencia</li>
+                  </ul>
+                </div>
+                <div className="p-4 bg-amber-50 dark:bg-amber-900/20 rounded-lg border border-amber-200 dark:border-amber-800">
+                  <p className="text-gray-900 dark:text-white font-medium">Para solicitudes de permisos:</p>
+                  <p className="text-gray-700 dark:text-gray-300">Contacta: jorgemunozcast12@gmail.com</p>
+                </div>
+                <div className="text-center mt-4">
+                  <a
+                    href="https://github.com/Jorge221z/skillpilot?tab=License-1-ov-file#readme"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 text-teal-600 hover:text-teal-700 dark:text-teal-400 dark:hover:text-teal-300 underline font-medium"
+                  >
+                    Ver licencia completa en GitHub
+                    <ExternalLink className="h-4 w-4" />
+                  </a>
+                </div>
+              </CardContent>
+            </Card>
+
             {/* Modificaciones */}
             <Card className="shadow-lg bg-white dark:bg-gray-800/50">
               <CardHeader className="border-b border-gray-200 dark:border-gray-700">
                 <div className="flex items-center gap-3">
                   <Scale className="h-6 w-6 text-gray-500" />
-                  <h2 className="text-xl font-semibold text-gray-900 dark:text-white">8. Modificaciones</h2>
+                  <h2 className="text-xl font-semibold text-gray-900 dark:text-white">9. Modificaciones</h2>
                 </div>
               </CardHeader>
               <CardContent className="p-6">

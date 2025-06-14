@@ -341,6 +341,104 @@ export default function About() {
               </CardContent>
             </Card>
           </div>
+
+          {/* Licencia del Proyecto */}
+          <div className="mt-16">
+            <Card className="border-0 shadow-lg bg-white dark:bg-gray-800/50">
+              <CardHeader className="border-b border-gray-200 dark:border-gray-700">
+                <div className="flex items-center gap-3">
+                  <Shield className="h-6 w-6 text-amber-500" />
+                  <CardTitle className="text-xl font-semibold text-gray-900 dark:text-white">
+                    Licencia del Proyecto
+                  </CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent className="p-6 space-y-4">
+                <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
+                  Este proyecto está protegido bajo una licencia personalizada con derechos de autor reservados
+                  a Jorge Muñoz Castillo (Jorge221z). El software se proporciona exclusivamente para fines
+                  educativos y de referencia.
+                </p>
+
+                <div className="grid md:grid-cols-2 gap-6">
+                  {/* Permisos */}
+                  <div className="space-y-3">
+                    <h4 className="text-lg font-medium text-green-700 dark:text-green-400 flex items-center gap-2">
+                      <Star className="h-5 w-5" />
+                      Permisos
+                    </h4>
+                    <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
+                      <li className="flex items-start gap-2">
+                        <div className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
+                        <span>Uso para fines educativos y de referencia</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <div className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
+                        <span>Modificación con consentimiento explícito por escrito</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <div className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
+                        <span>Atribución clara al autor original requerida</span>
+                      </li>
+                    </ul>
+                  </div>
+
+                  {/* Prohibiciones */}
+                  <div className="space-y-3">
+                    <h4 className="text-lg font-medium text-red-700 dark:text-red-400 flex items-center gap-2">
+                      <Shield className="h-5 w-5" />
+                      Prohibiciones
+                    </h4>
+                    <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
+                      <li className="flex items-start gap-2">
+                        <div className="w-2 h-2 bg-red-500 rounded-full mt-2 flex-shrink-0"></div>
+                        <span>Uso comercial no autorizado</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <div className="w-2 h-2 bg-red-500 rounded-full mt-2 flex-shrink-0"></div>
+                        <span>Copia, modificación o distribución sin permiso</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <div className="w-2 h-2 bg-red-500 rounded-full mt-2 flex-shrink-0"></div>
+                        <span>No se otorgan derechos de código abierto</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div className="p-4 bg-amber-50 dark:bg-amber-900/20 rounded-lg border border-amber-200 dark:border-amber-800 mt-6">
+                  <div className="flex items-center gap-3">
+                    <Mail className="h-5 w-5 text-amber-600 dark:text-amber-400" />
+                    <div>
+                      <p className="font-medium text-gray-900 dark:text-white">
+                        Para solicitudes de permisos o consultas sobre la licencia:
+                      </p>
+                      <p className="text-gray-700 dark:text-gray-300">
+                        Contacta: <span className="font-mono">jorgemunozcast12@gmail.com</span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="text-center pt-4 border-t border-gray-200 dark:border-gray-700">
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    © {new Date().getFullYear()} Jorge Muñoz Castillo (Jorge221z). Todos los derechos reservados.
+                  </p>
+                  <div className="mt-3">
+                    <a
+                      href="https://github.com/Jorge221z/skillpilot?tab=License-1-ov-file#readme"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 text-teal-600 hover:text-teal-700 dark:text-teal-400 dark:hover:text-teal-300 underline font-medium text-sm"
+                    >
+                      Ver licencia completa en GitHub
+                      <ExternalLink className="h-3 w-3" />
+                    </a>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </div>
     </AppLayout>
