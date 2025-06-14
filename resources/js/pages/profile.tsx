@@ -307,6 +307,12 @@ export default function Profile() {
                           <p className="text-gray-500 dark:text-gray-400 italic">No hay habilidades especificadas</p>
                         )}
                       </div>
+                      {/* Skills Tip */}
+                      <div className="mt-8">
+                        <p className="text-xs text-gray-500 dark:text-gray-400 italic">
+                          💡 Tip: Agregar más habilidades/tecnologías aumenta las posibilidades de encontrar ofertas relevantes
+                        </p>
+                      </div>
                     </div>
                   </div>
 
