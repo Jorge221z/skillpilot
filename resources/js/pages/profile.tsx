@@ -280,6 +280,12 @@ export default function Profile() {
                       <p className="text-gray-900 dark:text-white font-medium text-lg">
                         {props.userProfile.desired_position || "No especificada"}
                       </p>
+                      {/* Position Tip */}
+                      <div className="mt-4">
+                        <p className="text-xs text-gray-500 dark:text-gray-400 italic">
+                          💡 Tip: Los nombres de los puestos deben estar en inglés para obtener mejores resultados (Ej: Python Developer)
+                        </p>
+                      </div>
                     </div>
                   </div>
 
