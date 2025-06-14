@@ -146,7 +146,7 @@ export default function Dashboard({ jobMatches, totalMatches }: DashboardProps) 
 
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
-      <Head title="Dashboard" />
+      <Head title="Ofertas" />
       <div className="min-h-screen bg-gray-100 dark:bg-neutral-800">
         <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20 py-4 sm:py-6 md:py-8 space-y-6 sm:space-y-8">
           {/* Header with Stats Cards */}
