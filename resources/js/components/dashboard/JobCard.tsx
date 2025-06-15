@@ -7,8 +7,11 @@ import {
   MapPin,
   Brain,
   Clock,
+  Eye,
 } from "lucide-react"
 import AIAnalysisCard from "@/components/AIAnalysisCard"
+import { useState } from "react"
+import JobDescriptionModal from "./JobDescriptionModal"
 
 interface JobOffer {
   id: number
@@ -44,6 +47,8 @@ export default function JobCard({
   onAnalysisComplete,
   onTagsModalOpen
 }: JobCardProps) {
+  const [isDescriptionModalOpen, setIsDescriptionModalOpen] = useState(false)
+
   const truncateText = (text: string, maxLength: number) => {
     if (text.length <= maxLength) return text
     return text.substring(0, maxLength) + "..."
@@ -112,9 +117,30 @@ export default function JobCard({
       <CardContent className="space-y-3 sm:space-y-4 p-4 sm:p-6">
         {/* Job Description */}
         <div className="space-y-2">
-          <h4 className="text-sm font-medium text-gray-900 dark:text-white">Descripción</h4>
+          <div className="flex items-center justify-between">
+            <h4 className="text-sm font-medium text-gray-900 dark:text-white">Descripción</h4>
+            {match.job_offer.description.length > 300 && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setIsDescriptionModalOpen(true)}
+                className="text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300 text-xs h-auto p-1"
+              >
+                <Eye className="h-3 w-3 mr-1" />
+                Ver completa
+              </Button>
+            )}
+          </div>
           <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed bg-gray-50 dark:bg-gray-700/50 p-3 sm:p-4 rounded-lg border border-gray-300 dark:border-gray-600">
             {truncateText(match.job_offer.description, 300)}
+            {match.job_offer.description.length > 300 && (
+              <button
+                onClick={() => setIsDescriptionModalOpen(true)}
+                className="text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300 font-medium ml-1 text-xs underline"
+              >
+                leer más
+              </button>
+            )}
           </p>
         </div>
 
@@ -188,6 +214,13 @@ export default function JobCard({
           )}
         </div>
       </CardContent>
+
+      {/* Modal para descripción completa */}
+      <JobDescriptionModal
+        isOpen={isDescriptionModalOpen}
+        onClose={() => setIsDescriptionModalOpen(false)}
+        jobOffer={match.job_offer}
+      />
     </Card>
   )
 }
