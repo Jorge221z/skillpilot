@@ -418,7 +418,7 @@ export default function Profile() {
                           onClick={() => setSelectedFile(null)}
                           className="mt-3"
                         >
-                          <X className="h-4 w-4 mr-1" />
+                          <Trash className="h-4 w-4 mr-1" />
                           Quitar archivo
                         </Button>
                       )}
@@ -612,7 +612,7 @@ export default function Profile() {
                               className="border-red-300 text-red-600 hover:bg-red-50 dark:border-red-700 dark:text-red-400 dark:hover:bg-red-900/20"
                               disabled={skills.filter(s => s.trim() !== "").length <= 1}
                             >
-                              <X className="h-4 w-4" />
+                              <Trash className="h-4 w-4" />
                             </Button>
                           )}
                         </div>
