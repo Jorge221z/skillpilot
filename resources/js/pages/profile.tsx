@@ -579,6 +579,12 @@ export default function Profile() {
                       className="border-gray-300 dark:border-gray-600 focus:border-teal-500 focus:ring-teal-500"
                       required
                     />
+                    {/* Position Tip */}
+                    <div className="mt-2">
+                      <p className="text-xs text-gray-500 dark:text-gray-400 italic">
+                        💡 Tip: El nombre del puesto debe estar en inglés para obtener mejores resultados (Ej: Python Developer, AI Engineer)
+                      </p>
+                    </div>
                     {errors.desired_position && (
                       <p className="text-sm text-red-600 dark:text-red-400">{errors.desired_position}</p>
                     )}
@@ -627,6 +633,12 @@ export default function Profile() {
                         <Plus className="h-4 w-4" />
                         Agregar Habilidad
                       </Button>
+                    </div>
+                    {/* Skills Tip */}
+                    <div className="mt-2">
+                      <p className="text-xs text-gray-500 dark:text-gray-400 italic">
+                        💡 Tip: Agregar más habilidades/tecnologías aumenta las posibilidades de encontrar ofertas relevantes
+                      </p>
                     </div>
                     {skills.filter(s => s.trim() !== "").length === 0 && (
                       <p className="text-sm text-red-600 dark:text-red-400">
