@@ -600,6 +600,19 @@ export default function Profile() {
                                                 )}
                                             </label>
                                         </div>
+                                        {/* CV advise */}
+                                        <div className="mt-2">
+                                            <p className="text-xs text-gray-500 dark:text-gray-400 italic">
+                                                📢 Aviso: El PDF será procesado y después eliminado. No se almacena en nuestra base de datos. Consulta{" "}
+                                                <Link
+                                                    href="/terms-and-conditions"
+                                                    className="text-teal-600 hover:text-teal-700 dark:text-teal-400 dark:hover:text-teal-300 underline"
+                                                >
+                                                    T&C
+                                                </Link>
+                                                {" "}para saber más.
+                                            </p>
+                                        </div>
                                         {errors.cv_file && <p className="text-sm text-red-600 dark:text-red-400">{errors.cv_file}</p>}
                                     </div>
 
