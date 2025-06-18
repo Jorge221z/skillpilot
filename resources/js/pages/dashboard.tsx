@@ -10,6 +10,9 @@ import DashboardStats from "@/components/dashboard/DashboardStats"
 import JobCard from "@/components/dashboard/JobCard"
 import TagsModal from "@/components/dashboard/TagsModal"
 import EmptyState from "@/components/dashboard/EmptyState"
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Button } from "@/components/ui/button"
+import { AlertCircle, User } from "lucide-react"
 
 interface PaginationLinks {
   url: string | null
@@ -78,6 +81,7 @@ export default function Dashboard({ jobMatches, totalMatches }: DashboardProps) 
   const [selectedJobTags, setSelectedJobTags] = useState<string[]>([])
   const [selectedJobTitle, setSelectedJobTitle] = useState<string>("")
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [showNoJobsModal, setShowNoJobsModal] = useState(false)
 
   // Memoizar flash messages para evitar re-renders innecesarios
   const flashMessages = useMemo(() => props.flash, [props.flash])
@@ -94,11 +98,19 @@ export default function Dashboard({ jobMatches, totalMatches }: DashboardProps) 
     }
     if (flashMessages.warning) {
       toast.warning(flashMessages.warning, { duration: 4000 })
+
+      // Verificar si es un mensaje de "no se encontraron ofertas" y no hay ofertas existentes
+      if (flashMessages.warning.includes('No se encontraron ofertas') && jobMatches.total === 0) {
+        // Mostrar el modal después de un breve delay para que se vea el toast primero
+        setTimeout(() => {
+          setShowNoJobsModal(true)
+        }, 500)
+      }
     }
     if (flashMessages.info) {
       toast.info(flashMessages.info, { duration: 4000 })
     }
-  }, [flashMessages])
+  }, [flashMessages, jobMatches.total])
 
   const handleFetchJobs = useCallback(() => {
     post(route("jobs.fetch-and-match"), {
@@ -121,6 +133,11 @@ export default function Dashboard({ jobMatches, totalMatches }: DashboardProps) 
     // Usar router.reload en lugar de estado local para mantener sincronización
     router.reload({ only: ["jobMatches"] })
     toast.success("¡Análisis completado con éxito!")
+  }, [])
+
+  const handleRedirectToProfile = useCallback(() => {
+    setShowNoJobsModal(false)
+    router.visit(route("profile"))
   }, [])
 
   return (
@@ -187,6 +204,47 @@ export default function Dashboard({ jobMatches, totalMatches }: DashboardProps) 
           </div>
         </div>
       </div>
+
+      {/* No Jobs Found Modal */}
+      <Dialog open={showNoJobsModal} onOpenChange={setShowNoJobsModal}>
+        <DialogContent className="sm:max-w-[450px]">
+          <DialogHeader className="text-center">
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-yellow-100 to-orange-100 dark:from-yellow-900/20 dark:to-orange-900/20">
+              <AlertCircle className="h-8 w-8 text-yellow-600 dark:text-yellow-400" />
+            </div>
+            <DialogTitle className="text-xl font-semibold text-gray-900 dark:text-white text-center">
+              No encontramos ofertas para ti
+            </DialogTitle>
+            <DialogDescription className="text-center text-gray-600 dark:text-gray-400 mt-3 space-y-2">
+              <p>
+                No hemos encontrado ninguna oferta de trabajo que coincida con tu perfil profesional actual.
+              </p>
+              <p className="text-sm">
+                Para mejorar tus resultados, te recomendamos actualizar tu perfil profesional
+                con más detalles sobre tus habilidades, tecnologías y preferencias laborales.
+              </p>
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="sm:justify-center mt-6">
+            <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+              <Button
+                variant="outline"
+                onClick={() => setShowNoJobsModal(false)}
+                className="w-full sm:w-auto cursor-pointer"
+              >
+                Cerrar
+              </Button>
+              <Button
+                onClick={handleRedirectToProfile}
+                className="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white cursor-pointer"
+              >
+                <User className="h-4 w-4 mr-2" />
+                Actualizar Perfil
+              </Button>
+            </div>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Tags Modal */}
       <TagsModal
