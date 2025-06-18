@@ -5,7 +5,7 @@ import type { BreadcrumbItem } from "@/types"
 import { Head } from "@inertiajs/react"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { MessageCircle, Bot, Loader2, CheckCircle } from "lucide-react"
-import { useEffect, useState } from "react"
+import { useEffect, useState, useCallback, useMemo } from "react"
 
 const breadcrumbs: BreadcrumbItem[] = [
   {
@@ -17,18 +17,61 @@ const breadcrumbs: BreadcrumbItem[] = [
 export default function Chatbot() {
   const [chatbotLoaded, setChatbotLoaded] = useState(false)
 
+  // Memoizar la configuración del script para evitar recreación
+  const scriptConfig = useMemo(() => ({
+    src: "https://oli4d7urqtimurg4vxbm23tk.agents.do-ai.run/static/chatbot/widget.js",
+    attributes: {
+      "data-agent-id": "467039ec-4519-11f0-bf8f-4e013e2ddde4",
+      "data-chatbot-id": "zoEt1d4n0KIr-YaFaWgIfiPE36kXtUzw",
+      "data-name": "Job AdvisorChatbot",
+      "data-primary-color": "#031B4E",
+      "data-secondary-color": "#E5E8ED",
+      "data-button-background-color": "#0061EB",
+      "data-starting-message": "Hola! En que te puedo ayudar?",
+      "data-logo": "/static/chatbot/icons/default-agent.svg"
+    }
+  }), [])
+
+  // Función para limpiar el chatbot
+  const cleanupChatbot = useCallback(() => {
+    const existingScript = document.querySelector(`script[src="${scriptConfig.src}"]`)
+    if (existingScript) {
+      existingScript.remove()
+    }
+
+    const chatbotElements = document.querySelectorAll(
+      '[id*="chatbot"], [class*="chatbot"], [data-agent-id], iframe[src*="agents.do-ai.run"]',
+    )
+    chatbotElements.forEach((element) => {
+      element.remove()
+    })
+
+    const commonChatbotSelectors = [
+      'div[style*="position: fixed"][style*="bottom"]',
+      'div[style*="z-index: 999"]',
+      ".widget-container",
+      "#widget-container",
+    ]
+
+    commonChatbotSelectors.forEach((selector) => {
+      const elements = document.querySelectorAll(selector)
+      elements.forEach((el) => {
+        if (el.innerHTML.includes("agents.do-ai.run") || el.innerHTML.includes("chatbot")) {
+          el.remove()
+        }
+      })
+    })
+  }, [scriptConfig.src])
+
   useEffect(() => {
     const script = document.createElement("script")
     script.async = true
-    script.src = "https://oli4d7urqtimurg4vxbm23tk.agents.do-ai.run/static/chatbot/widget.js"
-    script.setAttribute("data-agent-id", "467039ec-4519-11f0-bf8f-4e013e2ddde4")
-    script.setAttribute("data-chatbot-id", "zoEt1d4n0KIr-YaFaWgIfiPE36kXtUzw")
-    script.setAttribute("data-name", "Job AdvisorChatbot")
-    script.setAttribute("data-primary-color", "#031B4E")
-    script.setAttribute("data-secondary-color", "#E5E8ED")
-    script.setAttribute("data-button-background-color", "#0061EB")
-    script.setAttribute("data-starting-message", "Hola! En que te puedo ayudar?")
-    script.setAttribute("data-logo", "/static/chatbot/icons/default-agent.svg")
+    script.src = scriptConfig.src
+
+    // Aplicar atributos
+    Object.entries(scriptConfig.attributes).forEach(([key, value]) => {
+      script.setAttribute(key, value)
+    })
 
     script.onload = () => {
       setChatbotLoaded(true)
@@ -50,38 +93,9 @@ export default function Chatbot() {
     return () => {
       clearTimeout(loadTimeout)
       setChatbotLoaded(false)
-
-      const existingScript = document.querySelector(
-        'script[src="https://oli4d7urqtimurg4vxbm23tk.agents.do-ai.run/static/chatbot/widget.js"]',
-      )
-      if (existingScript) {
-        existingScript.remove()
-      }
-
-      const chatbotElements = document.querySelectorAll(
-        '[id*="chatbot"], [class*="chatbot"], [data-agent-id], iframe[src*="agents.do-ai.run"]',
-      )
-      chatbotElements.forEach((element) => {
-        element.remove()
-      })
-
-      const commonChatbotSelectors = [
-        'div[style*="position: fixed"][style*="bottom"]',
-        'div[style*="z-index: 999"]',
-        ".widget-container",
-        "#widget-container",
-      ]
-
-      commonChatbotSelectors.forEach((selector) => {
-        const elements = document.querySelectorAll(selector)
-        elements.forEach((el) => {
-          if (el.innerHTML.includes("agents.do-ai.run") || el.innerHTML.includes("chatbot")) {
-            el.remove()
-          }
-        })
-      })
+      cleanupChatbot()
     }
-  }, [])
+  }, [scriptConfig, cleanupChatbot]) // Removido chatbotLoaded de dependencias para evitar loop
 
   return (
     <AppLayout breadcrumbs={breadcrumbs}>

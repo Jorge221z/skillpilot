@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge"
 import AppLayout from "@/layouts/app-layout"
 import type { BreadcrumbItem } from "@/types"
 import { Head, useForm, router, usePage, Link } from "@inertiajs/react"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback, useMemo } from "react"
 import { Upload, FileText, User, Code, Plus, X, Edit, Save, Trash, ExternalLink, Rocket } from "lucide-react"
 import { toast } from "sonner"
 
@@ -52,29 +52,33 @@ export default function Profile() {
         skills: [] as string[],
     })
 
+    // Memoizar userProfile para evitar re-renders innecesarios
+    const userProfile = useMemo(() => props.userProfile, [props.userProfile])
+    const flashMessages = useMemo(() => props.flash, [props.flash])
+
+    // Inicializar datos solo cuando userProfile cambie realmente
     useEffect(() => {
-        if (props.userProfile) {
+        if (userProfile) {
             setData({
                 cv_file: null,
-                desired_position: props.userProfile.desired_position || "",
-                skills: props.userProfile.skills || [],
+                desired_position: userProfile.desired_position || "",
+                skills: userProfile.skills || [],
             })
-            setSkills(props.userProfile.skills || [""])
+            setSkills(userProfile.skills || [""])
         }
-    }, [props.userProfile])
+    }, [userProfile, setData])
 
+    // Handle flash messages con dependencias optimizadas
     useEffect(() => {
-        if (props.flash?.success) {
-            toast.success(props.flash.success, {
-                duration: 4000,
-            })
+        if (!flashMessages) return
+
+        if (flashMessages.success) {
+            toast.success(flashMessages.success, { duration: 4000 })
         }
-        if (props.flash?.error) {
-            toast.error(props.flash.error, {
-                duration: 5000,
-            })
+        if (flashMessages.error) {
+            toast.error(flashMessages.error, { duration: 5000 })
         }
-    }, [props.flash])
+    }, [flashMessages])
 
     // Prevenir el comportamiento por defecto del navegador para drag and drop fuera del área de subida
     useEffect(() => {
@@ -109,22 +113,22 @@ export default function Profile() {
         }
     }, [isEditing, props.userProfile])
 
-    const handleEditToggle = () => {
+    const handleEditToggle = useCallback(() => {
         if (isEditing) {
-            if (props.userProfile) {
+            if (userProfile) {
                 setData({
                     cv_file: null,
-                    desired_position: props.userProfile.desired_position || "",
-                    skills: props.userProfile.skills || [],
+                    desired_position: userProfile.desired_position || "",
+                    skills: userProfile.skills || [],
                 })
-                setSkills(props.userProfile.skills || [""])
+                setSkills(userProfile.skills || [""])
             }
             setSelectedFile(null)
         }
         setIsEditing(!isEditing)
-    }
+    }, [isEditing, userProfile, setData])
 
-    const handleUpdate = (e: React.FormEvent) => {
+    const handleUpdate = useCallback((e: React.FormEvent) => {
         e.preventDefault()
 
         const validSkills = skills.filter((tech) => tech.trim() !== "")
@@ -178,9 +182,9 @@ export default function Profile() {
                 },
             )
         }
-    }
+    }, [skills, selectedFile, data.desired_position, setIsProcessing, setSelectedFile, setIsEditing])
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = useCallback((e: React.FormEvent) => {
         e.preventDefault()
 
         if (!selectedFile) {
@@ -226,40 +230,40 @@ export default function Profile() {
                 toast.error("Error al procesar el CV. Por favor, revisa los datos e inténtalo de nuevo.")
             },
         })
-    }
+    }, [selectedFile, data.desired_position, skills, reset])
 
-    const handleFileSelect = (file: File) => {
+    const handleFileSelect = useCallback((file: File) => {
         if (file.type === "application/pdf") {
             setSelectedFile(file)
         } else {
             toast.error("Por favor selecciona un archivo PDF válido.")
         }
-    }
+    }, [])
 
-    const handleDrop = (e: React.DragEvent) => {
+    const handleDrop = useCallback((e: React.DragEvent) => {
         e.preventDefault()
         setDragOver(false)
         const file = e.dataTransfer.files[0]
         if (file) {
             handleFileSelect(file)
         }
-    }
+    }, [handleFileSelect])
 
-    const handleDragOver = (e: React.DragEvent) => {
+    const handleDragOver = useCallback((e: React.DragEvent) => {
         e.preventDefault()
         setDragOver(true)
-    }
+    }, [])
 
-    const handleDragLeave = (e: React.DragEvent) => {
+    const handleDragLeave = useCallback((e: React.DragEvent) => {
         e.preventDefault()
         setDragOver(false)
-    }
+    }, [])
 
-    const addTechnology = () => {
+    const addTechnology = useCallback(() => {
         setSkills([...skills, ""])
-    }
+    }, [skills])
 
-    const removeTechnology = (index: number) => {
+    const removeTechnology = useCallback((index: number) => {
         const validSkills = skills.filter((tech) => tech.trim() !== "")
 
         // No permitir eliminar si solo queda una skill válida o si es la única entrada
@@ -272,13 +276,13 @@ export default function Profile() {
             const newSkills = skills.filter((_, i) => i !== index)
             setSkills(newSkills)
         }
-    }
+    }, [skills])
 
-    const updateTechnology = (index: number, value: string) => {
+    const updateTechnology = useCallback((index: number, value: string) => {
         const newSkills = [...skills]
         newSkills[index] = value
         setSkills(newSkills)
-    }
+    }, [skills])
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>

@@ -4,7 +4,7 @@ import { Head, useForm, router, usePage } from "@inertiajs/react"
 import { Badge } from "@/components/ui/badge"
 import { Briefcase } from "lucide-react"
 import { toast } from "sonner"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback, useMemo } from "react"
 import PaginationControls from "@/components/dashboard/PaginationControls"
 import DashboardStats from "@/components/dashboard/DashboardStats"
 import JobCard from "@/components/dashboard/JobCard"
@@ -78,71 +78,50 @@ export default function Dashboard({ jobMatches, totalMatches }: DashboardProps) 
   const [selectedJobTags, setSelectedJobTags] = useState<string[]>([])
   const [selectedJobTitle, setSelectedJobTitle] = useState<string>("")
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [jobMatchesState, setJobMatchesState] = useState<JobMatch[]>(jobMatches.data)
 
+  // Memoizar flash messages para evitar re-renders innecesarios
+  const flashMessages = useMemo(() => props.flash, [props.flash])
+
+  // Handle flash messages con dependencias optimizadas
   useEffect(() => {
-    setJobMatchesState(jobMatches.data)
-  }, [jobMatches.data])
+    if (!flashMessages) return
 
-  // Handle flash messages
-  useEffect(() => {
-    if (props.flash?.success) {
-      toast.success(props.flash.success, {
-        duration: 4000,
-      })
+    if (flashMessages.success) {
+      toast.success(flashMessages.success, { duration: 4000 })
     }
-    if (props.flash?.error) {
-      toast.error(props.flash.error, {
-        duration: 5000,
-      })
+    if (flashMessages.error) {
+      toast.error(flashMessages.error, { duration: 5000 })
     }
-    if (props.flash?.warning) {
-      toast.warning(props.flash.warning, {
-        duration: 4000,
-      })
+    if (flashMessages.warning) {
+      toast.warning(flashMessages.warning, { duration: 4000 })
     }
-    if (props.flash?.info) {
-      toast.info(props.flash.info, {
-        duration: 4000,
-      })
+    if (flashMessages.info) {
+      toast.info(flashMessages.info, { duration: 4000 })
     }
-  }, [props.flash])
+  }, [flashMessages])
 
-  const handleFetchJobs = () => {
+  const handleFetchJobs = useCallback(() => {
     post(route("jobs.fetch-and-match"), {
       onSuccess: () => {
-        // No mostramos toast aquí porque los mensajes flash se manejan automáticamente
-        // Si hay ofertas, se mostrará un mensaje de éxito via flash
-        // Si el perfil está incompleto, se redirigirá a /profile con mensaje de error
         router.reload({ only: ["jobMatches", "totalMatches"] })
       },
       onError: (errors) => {
         toast.error(errors.message || "Error al buscar ofertas")
       },
     })
-  }
+  }, [post])
 
-  const openTagsModal = (tags: string[], jobTitle: string) => {
+  const openTagsModal = useCallback((tags: string[], jobTitle: string) => {
     setSelectedJobTags(tags)
     setSelectedJobTitle(jobTitle)
     setIsModalOpen(true)
-  }
+  }, [])
 
-  const handleAnalysisComplete = (jobMatchId: number, analysisData: any) => {
-    setJobMatchesState((prevMatches) =>
-      prevMatches.map((match) =>
-        match.id === jobMatchId
-          ? {
-              ...match,
-              ai_feedback: analysisData.recomendaciones,
-              cover_letter: analysisData.carta,
-              match_score: analysisData.match_score,
-            }
-          : match,
-      ),
-    )
+  const handleAnalysisComplete = useCallback((jobMatchId: number, analysisData: any) => {
+    // Usar router.reload en lugar de estado local para mantener sincronización
+    router.reload({ only: ["jobMatches"] })
     toast.success("¡Análisis completado con éxito!")
-  }
+  }, [])
 
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
@@ -188,11 +167,11 @@ export default function Dashboard({ jobMatches, totalMatches }: DashboardProps) 
               </div>
             </div>
 
-            {jobMatchesState.length === 0 ? (
+            {jobMatches.data.length === 0 ? (
               <EmptyState processing={processing} onFetchJobs={handleFetchJobs} />
             ) : (
               <div className="space-y-4">
-                {jobMatchesState.map((match) => (
+                {jobMatches.data.map((match: JobMatch) => (
                   <JobCard
                     key={match.id}
                     match={match}

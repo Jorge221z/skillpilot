@@ -4,6 +4,7 @@ import { Head } from "@inertiajs/react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { useMemo } from "react"
 import {
   ExternalLink,
   Brain,
@@ -26,6 +27,7 @@ import {
   Activity
 } from "lucide-react"
 
+// Datos estáticos movidos fuera del componente para evitar recreación
 const breadcrumbs: BreadcrumbItem[] = [
   {
     title: "Sobre el Proyecto",
@@ -78,6 +80,8 @@ const features = [
 ]
 
 export default function About() {
+  // Memoizar el año actual para evitar cálculos innecesarios
+  const currentYear = useMemo(() => new Date().getFullYear(), [])
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Sobre el Proyecto" />
@@ -429,7 +433,7 @@ export default function About() {
 
                 <div className="text-center pt-4 border-t border-gray-200 dark:border-gray-700">
                   <p className="text-sm text-gray-500 dark:text-gray-400">
-                    © {new Date().getFullYear()} Jorge Muñoz Castillo (Jorge221z). Todos los derechos reservados.
+                    © {currentYear} Jorge Muñoz Castillo (Jorge221z). Todos los derechos reservados.
                   </p>
                   <div className="mt-3">
                     <a
