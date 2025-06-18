@@ -76,6 +76,39 @@ export default function Profile() {
     }
   }, [props.flash])
 
+  // Prevenir el comportamiento por defecto del navegador para drag and drop fuera del área de subida
+  useEffect(() => {
+    const preventDefaults = (e: DragEvent) => {
+      e.preventDefault()
+      e.stopPropagation()
+    }
+
+    const handleDragEnter = (e: DragEvent) => {
+      preventDefaults(e)
+    }
+
+    const handleDragOver = (e: DragEvent) => {
+      preventDefaults(e)
+    }
+
+    const handleDrop = (e: DragEvent) => {
+      preventDefaults(e)
+    }
+
+    // Solo agregar los event listeners cuando se está en modo de edición o creación inicial
+    if (isEditing || !props.userProfile) {
+      document.addEventListener('dragenter', handleDragEnter)
+      document.addEventListener('dragover', handleDragOver)
+      document.addEventListener('drop', handleDrop)
+    }
+
+    return () => {
+      document.removeEventListener('dragenter', handleDragEnter)
+      document.removeEventListener('dragover', handleDragOver)
+      document.removeEventListener('drop', handleDrop)
+    }
+  }, [isEditing, props.userProfile])
+
   const handleEditToggle = () => {
     if (isEditing) {
       if (props.userProfile) {
