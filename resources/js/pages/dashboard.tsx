@@ -167,7 +167,7 @@ export default function Dashboard({ jobMatches, totalMatches }: DashboardProps) 
           </div>
 
           {/* Job Offers Section */}
-          <div className="space-y-4 sm:space-y-6">
+          <div className="space-y-4 sm:space-y-6 pt-4">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-gray-200 dark:border-gray-700 pb-4 gap-4">
               <div>
                 <h2 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white flex items-center gap-2">
