@@ -553,9 +553,9 @@ export default function Profile() {
                                     {/* Upload CV */}
                                     <div className="space-y-2">
                                         <div className="text-center mb-6">
-                                            <div className="inline-flex items-center justify-center gap-2 text-2xl font-semibold text-gray-900 dark:text-white">
+                                            <div className="inline-flex items-center justify-center gap-0 text-2xl font-semibold text-gray-900 dark:text-white">
                                                 <span>Crea tu Perfil Profesional</span>
-                                                <Rocket className="w-6 h-6 text-teal-500 ml-2" />
+                                                <Rocket className="w-6 h-6 text-teal-500 lg:ml-2 sm:ml-0" />
                                             </div>
                                         </div>
 
