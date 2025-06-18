@@ -99,13 +99,11 @@ export default function DashboardStats({
       {totalMatches > 0 && (
         <SimpleCard className="w-auto">
           <div className="py-3 px-3">
-            <div className="flex items-center justify-center">
+            <div className="flex items-center justify-center relative group">
               <Button
                 onClick={handleClearAllOffers}
                 disabled={processing || clearingOffers}
-                variant="destructive"
-                size="sm"
-                className="h-10 sm:h-12 w-10 sm:w-12 p-0"
+                className="h-10 sm:h-12 w-10 sm:w-12 p-0 bg-red-600 hover:bg-red-700 text-white font-semibold hover:cursor-pointer border-0"
                 title="Borrar todas las ofertas"
               >
                 {clearingOffers ? (
@@ -114,6 +112,12 @@ export default function DashboardStats({
                   <Trash2 className="h-5 w-5 sm:h-6 sm:w-6" />
                 )}
               </Button>
+
+              {/* Tooltip personalizado */}
+              <div className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 pointer-events-none z-10">
+                Borrar todas las ofertas
+                <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-900"></div>
+              </div>
             </div>
           </div>
         </SimpleCard>
