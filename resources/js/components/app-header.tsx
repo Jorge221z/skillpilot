@@ -194,38 +194,76 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="ml-14 hidden h-full items-center space-x-6 lg:flex">
-            <div className="relative flex items-center gap-2">
-              {/* Animated background indicator */}
+          <nav className="ml-14 hidden h-full items-center space-x-3 lg:flex">
+            <div className="relative flex items-center gap-1">
+              {/* Enhanced background indicator for active item */}
               {selectedItem && (
                 <motion.div
-                  className="absolute rounded-md z-0"
+                  className="absolute rounded-xl z-0 overflow-hidden"
                   layoutId="desktop-nav-indicator"
                   initial={false}
                   animate={getSelectedItemDimensions()}
                   transition={{
                     type: "spring",
-                    stiffness: 400,
-                    damping: 30,
+                    stiffness: 500,
+                    damping: 35,
                   }}
                 >
-                  <div className="absolute inset-0 bg-neutral-100 dark:bg-neutral-800 rounded-md" />
-                  <div className="absolute inset-0 border border-blue-200 dark:border-blue-800 rounded-md" />
-                  <div className="absolute inset-0 bg-gradient-to-r from-blue-50/50 via-blue-100/30 to-blue-50/50 dark:from-blue-900/20 dark:via-blue-800/10 dark:to-blue-900/20 rounded-md" />
-
-                  {/* Underline */}
-                  <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-blue-400 via-blue-500 to-blue-400 dark:from-blue-400 dark:via-blue-300 dark:to-blue-400" />
+                  {/* Glass morphism background with subtle breathing */}
+                  <motion.div 
+                    className="absolute inset-0 bg-gradient-to-br from-blue-50/80 via-blue-100/60 to-blue-50/80 dark:from-blue-900/30 dark:via-blue-800/20 dark:to-blue-900/30 backdrop-blur-sm rounded-xl"
+                    animate={{
+                      opacity: [0.8, 1, 0.8]
+                    }}
+                    transition={{
+                      duration: 4,
+                      repeat: Infinity,
+                      ease: "easeInOut"
+                    }}
+                  />
+                  
+                  {/* Animated border with gentle glow */}
+                  <motion.div 
+                    className="absolute inset-0 rounded-xl border border-blue-200/60 dark:border-blue-700/50"
+                    animate={{
+                      boxShadow: [
+                        "0 0 0 0px rgba(59, 130, 246, 0.1)",
+                        "0 0 0 2px rgba(59, 130, 246, 0.2)",
+                        "0 0 0 0px rgba(59, 130, 246, 0.1)"
+                      ]
+                    }}
+                    transition={{
+                      duration: 3,
+                      repeat: Infinity,
+                      ease: "easeInOut"
+                    }}
+                  />
+                  
+                  {/* Subtle inner highlight */}
+                  <motion.div 
+                    className="absolute inset-0 bg-gradient-to-r from-transparent via-blue-200/20 to-transparent dark:via-blue-400/10 rounded-xl"
+                    animate={{
+                      opacity: [0.3, 0.6, 0.3]
+                    }}
+                    transition={{
+                      duration: 2.5,
+                      repeat: Infinity,
+                      ease: "easeInOut"
+                    }}
+                  />
                 </motion.div>
               )}
 
-              {/* Hover indicator */}
+              {/* Enhanced hover indicator */}
               <AnimatePresence>
                 {hoveredItem && hoveredItem !== selectedItem && (
                   <motion.div
-                    className="absolute rounded-md z-[-1]"
-                    initial={{ opacity: 0 }}
+                    className="absolute rounded-xl z-[-1] overflow-hidden"
+                    initial={{ opacity: 0, scale: 0.95, y: 2 }}
                     animate={{
                       opacity: 1,
+                      scale: 1,
+                      y: 0,
                       ...(() => {
                         const el = navItemRefs.current.get(hoveredItem)
                         if (!el) return { width: 0, height: 0, left: 0, top: 0 }
@@ -239,10 +277,22 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
                         }
                       })(),
                     }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.2 }}
+                    exit={{ opacity: 0, scale: 0.95, y: 2 }}
+                    transition={{ duration: 0.25, ease: "easeOut" }}
                   >
-                    <div className="absolute inset-0 bg-neutral-100/50 dark:bg-neutral-800/30 rounded-md" />
+                    {/* Hover background with gentle pulse */}
+                    <motion.div 
+                      className="absolute inset-0 bg-gradient-to-br from-neutral-100/70 via-neutral-50/50 to-neutral-100/70 dark:from-neutral-800/50 dark:via-neutral-700/30 dark:to-neutral-800/50 backdrop-blur-sm rounded-xl"
+                      animate={{
+                        opacity: [0.7, 1, 0.7]
+                      }}
+                      transition={{
+                        duration: 2,
+                        repeat: Infinity,
+                        ease: "easeInOut"
+                      }}
+                    />
+                    <div className="absolute inset-0 border border-neutral-200/50 dark:border-neutral-600/30 rounded-xl" />
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -259,19 +309,47 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
                     <Link
                       href={item.href}
                       className={cn(
-                        "flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors z-10 relative",
+                        "flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 z-10 relative group",
                         isActive
-                          ? "text-blue-600 dark:text-blue-400"
-                          : "text-neutral-700 dark:text-neutral-200 hover:text-neutral-900 dark:hover:text-neutral-100",
+                          ? "text-blue-600 dark:text-blue-400 shadow-sm"
+                          : "text-neutral-700 dark:text-neutral-200 hover:text-neutral-900 dark:hover:text-neutral-100 hover:-translate-y-0.5",
                       )}
                       onClick={() => handleNavItemClick(item.href)}
                       onMouseEnter={() => setHoveredItem(item.href)}
                       onMouseLeave={() => setHoveredItem(null)}
                       prefetch
                     >
-                      <motion.div animate={isActive ? { scale: [1, 1.1, 1] } : {}} transition={{ duration: 0.3 }}>
+                      <motion.div 
+                        animate={isActive ? { 
+                          scale: [1, 1.05, 1],
+                          rotate: [0, 1, 0, -1, 0]
+                        } : {}} 
+                        transition={{ 
+                          duration: 0.5,
+                          ease: "easeInOut" 
+                        }}
+                        key={isActive ? `active-${item.href}` : `inactive-${item.href}`}
+                        className="relative"
+                      >
                         {item.icon && <item.icon className="h-4 w-4" />}
+                        
+                        {/* Subtle icon glow for active state */}
+                        {isActive && (
+                          <motion.div
+                            className="absolute -inset-1 rounded-full bg-blue-400/20 dark:bg-blue-400/10"
+                            animate={{
+                              scale: [1, 1.2, 1],
+                              opacity: [0.3, 0.6, 0.3]
+                            }}
+                            transition={{
+                              duration: 2.5,
+                              repeat: Infinity,
+                              ease: "easeInOut"
+                            }}
+                          />
+                        )}
                       </motion.div>
+                      
                       <span>{item.title}</span>
                     </Link>
                   </div>
