@@ -34,7 +34,7 @@ export default function SettingsLayout({ children }: PropsWithChildren) {
 
     return (
         <div className="px-8 md:px-12 lg:px-16 xl:px-20 py-8 space-y-8">
-            <Heading title="Settings" description="Manage your profile and account settings" />
+            <Heading title="Ajustes" description="Administra tu cuenta y preferencias" />
 
             <div className="flex flex-col space-y-8 lg:flex-row lg:space-y-0 lg:space-x-12">
                 <aside className="w-full max-w-xl lg:w-48">
