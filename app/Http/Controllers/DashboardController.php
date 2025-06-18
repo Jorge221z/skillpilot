@@ -58,4 +58,25 @@ class DashboardController extends Controller
             ]
         ]);
     }
+
+    /**
+     * Borrar todas las ofertas de trabajo del usuario
+     */
+    public function clearAllOffers(Request $request)
+    {
+        $user = Auth::user();
+
+        try {
+            // Eliminar todas las relaciones del usuario con las ofertas de trabajo
+            $deletedCount = $user->jobMatches()->delete();
+
+            if ($deletedCount > 0) {
+                return redirect()->route('dashboard')->with('success', "Se eliminaron {$deletedCount} ofertas de trabajo correctamente.");
+            } else {
+                return redirect()->route('dashboard')->with('info', 'No había ofertas para eliminar.');
+            }
+        } catch (\Exception $e) {
+            return redirect()->route('dashboard')->with('error', 'Ocurrió un error al eliminar las ofertas.');
+        }
+    }
 }

@@ -21,6 +21,7 @@ Route::get('sitemap.xml', function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::delete('dashboard/clear-offers', [DashboardController::class, 'clearAllOffers'])->name('dashboard.clear-offers');
 
     Route::get('profile', [ProfileController::class, 'show'])->name('profile');
 
