@@ -1,8 +1,9 @@
-import React from "react"
+import React, { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Trophy, Search, Trash2 } from "lucide-react"
+import { Trophy, Search, Trash2, AlertTriangle } from "lucide-react"
 import { useForm } from "@inertiajs/react"
 import { toast } from "sonner"
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 
 interface DashboardStatsProps {
   totalMatches: number
@@ -28,6 +29,7 @@ export default function DashboardStats({
   onFetchJobs
 }: DashboardStatsProps) {
   const { delete: deleteMethod, processing: clearingOffers } = useForm()
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
 
   const handleClearAllOffers = () => {
     if (totalMatches === 0) {
@@ -35,20 +37,24 @@ export default function DashboardStats({
       return
     }
 
-    if (window.confirm(`¿Estás seguro de que quieres eliminar todas las ${totalMatches} ofertas? Esta acción no se puede deshacer.`)) {
-      deleteMethod(route("dashboard.clear-offers"), {
-        onSuccess: () => {
-          // Los mensajes flash se manejan automáticamente en el dashboard
-        },
-        onError: (errors) => {
-          toast.error(errors.message || "Error al eliminar las ofertas")
-        },
-      })
-    }
+    setShowDeleteModal(true)
+  }
+
+  const confirmClearOffers = () => {
+    deleteMethod(route("dashboard.clear-offers"), {
+      onSuccess: () => {
+        setShowDeleteModal(false)
+        // Los mensajes flash se manejan automáticamente en el dashboard
+      },
+      onError: (errors) => {
+        toast.error(errors.message || "Error al eliminar las ofertas")
+        setShowDeleteModal(false)
+      },
+    })
   }
 
   return (
-    <div className="flex flex-col sm:flex-row gap-4 lg:gap-8">
+    <div className="flex flex-col sm:flex-row gap-4 lg:gap-4">
       {/* Total Matches */}
       <SimpleCard className="w-full sm:w-80 lg:w-96 border-l-4 border-l-orange-200">
         <div className="py-3 px-4">
@@ -122,6 +128,57 @@ export default function DashboardStats({
           </div>
         </SimpleCard>
       )}
+
+      {/* Modal de confirmación para borrar ofertas */}
+      <Dialog open={showDeleteModal} onOpenChange={setShowDeleteModal}>
+        <DialogContent className="sm:max-w-[450px]">
+          <DialogHeader className="text-center">
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-red-100 to-red-200 dark:from-red-900/20 dark:to-red-800/20">
+              <AlertTriangle className="h-8 w-8 text-red-600 dark:text-red-400" />
+            </div>
+            <DialogTitle className="text-xl font-semibold text-gray-900 dark:text-white text-center">
+              Confirmar eliminación
+            </DialogTitle>
+            <DialogDescription className="text-center text-gray-600 dark:text-gray-400 mt-3 space-y-2">
+              <p>
+                ¿Estás seguro de que quieres eliminar todas las <strong>{totalMatches}</strong> ofertas?
+              </p>
+              <p className="text-sm text-red-600 dark:text-red-400 font-medium">
+                Esta acción no se puede deshacer.
+              </p>
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="sm:justify-center mt-6">
+            <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+              <Button
+                variant="outline"
+                onClick={() => setShowDeleteModal(false)}
+                disabled={clearingOffers}
+                className="w-full sm:w-auto hover:cursor-pointer"
+              >
+                Cancelar
+              </Button>
+              <Button
+                onClick={confirmClearOffers}
+                disabled={clearingOffers}
+                className="w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white hover:cursor-pointer"
+              >
+                {clearingOffers ? (
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                    Eliminando...
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2">
+                    <Trash2 className="h-4 w-4" />
+                    Eliminar todas
+                  </div>
+                )}
+              </Button>
+            </div>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
