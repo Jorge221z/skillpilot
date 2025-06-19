@@ -40,6 +40,10 @@ export default function Welcome() {
       <Head title="Búsqueda de Empleo con IA">
         <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
         <style>{`
+html {
+  scroll-behavior: smooth;
+}
+
 @keyframes gradient-x {
   0%, 100% {
     background-position: 0% 50%;
@@ -89,14 +93,14 @@ export default function Welcome() {
                 <>
                   <Link
                     href={route("login")}
-                    className="inline-block rounded-md border border-blue-500 px-3 sm:px-5 py-2 text-xs sm:text-sm font-medium text-blue-400 transition-colors hover:bg-blue-500/10"
+                    className="inline-block rounded-md border border-blue-500 px-3 sm:px-5 py-2 text-xs sm:text-sm font-medium text-blue-400 transition-all duration-300 hover:bg-blue-500/20 hover:border-blue-400 hover:text-white hover:shadow-lg hover:shadow-blue-500/30 hover:scale-105 transform"
                   >
                     <span className="hidden sm:inline">Iniciar Sesión</span>
                     <span className="sm:hidden">Login</span>
                   </Link>
                   <Link
                     href={route("register")}
-                    className="inline-block rounded-md bg-gradient-to-r from-orange-500 to-orange-600 px-3 sm:px-5 py-2 text-xs sm:text-sm font-medium text-white shadow-lg shadow-orange-500/30 transition-all hover:from-orange-600 hover:to-orange-700 hover:shadow-orange-600/40"
+                    className="inline-block rounded-md bg-gradient-to-r from-orange-500 to-orange-600 px-3 sm:px-5 py-2 text-xs sm:text-sm font-medium text-white shadow-lg shadow-orange-500/30 transition-all duration-300 hover:from-orange-600 hover:to-orange-700 hover:shadow-orange-600/50 hover:scale-105 transform hover:shadow-xl"
                   >
                     <span className="hidden sm:inline">Registrarse</span>
                     <span className="sm:hidden">Registro</span>
@@ -134,13 +138,13 @@ export default function Welcome() {
                 <div className="flex flex-col gap-3 sm:gap-4 pt-2 sm:pt-4 sm:flex-row px-2">
                   <Link
                     href={route("register")}
-                    className="inline-block rounded-md bg-gradient-to-r from-orange-500 to-orange-600 px-6 py-3 text-center font-medium text-white shadow-lg shadow-orange-500/30 transition-all hover:from-orange-600 hover:to-orange-700 hover:shadow-orange-600/40 hover:scale-105 transform"
+                    className="inline-block rounded-md bg-gradient-to-r from-orange-500 to-orange-600 px-6 py-3 text-center font-medium text-white shadow-lg shadow-orange-500/30 transition-all duration-300 hover:from-orange-600 hover:to-orange-700 hover:shadow-orange-600/50 hover:scale-105 transform hover:shadow-xl"
                   >
                     Comenzar Ahora
                   </Link>
                   <a
                     href="#features"
-                    className="inline-block rounded-md border border-slate-700 px-6 py-3 text-center text-slate-300 transition-all hover:bg-slate-800 hover:border-orange-500/50"
+                    className="inline-block rounded-md border border-slate-700 px-6 py-3 text-center text-slate-300 transition-all duration-300 hover:bg-slate-800 hover:border-slate-500 hover:text-white hover:shadow-lg hover:shadow-slate-500/20 hover:scale-105 transform"
                   >
                     ¿Cómo funciona?
                   </a>
@@ -271,13 +275,13 @@ export default function Welcome() {
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
                 <Link
                   href={route("register")}
-                  className="inline-block rounded-md bg-gradient-to-r from-orange-500 to-orange-600 px-6 py-3 text-center font-medium text-white shadow-lg shadow-orange-500/30 transition-all hover:from-orange-600 hover:to-orange-700 hover:shadow-orange-600/40 hover:scale-105 transform"
+                  className="inline-block rounded-md bg-gradient-to-r from-orange-500 to-orange-600 px-6 py-3 text-center font-medium text-white shadow-lg shadow-orange-500/30 transition-all duration-300 hover:from-orange-600 hover:to-orange-700 hover:shadow-orange-600/50 hover:scale-105 transform hover:shadow-xl"
                 >
                   Crear Cuenta Gratis
                 </Link>
                 <Link
                   href={route("login")}
-                  className="inline-block rounded-md border border-blue-500 px-6 py-3 text-center text-blue-400 transition-all hover:bg-blue-500/10 hover:border-blue-400"
+                  className="inline-block rounded-md border border-blue-500 px-6 py-3 text-center text-blue-400 transition-all duration-300 hover:bg-blue-500/20 hover:border-blue-400 hover:text-white hover:shadow-lg hover:shadow-blue-500/30 hover:scale-105 transform"
                 >
                   Iniciar Sesión
                 </Link>
